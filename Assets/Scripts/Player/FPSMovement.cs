@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 
@@ -9,8 +10,9 @@ namespace Player
         [SerializeField] private Transform head;
         [Space]
         [SerializeField] private float baseMovementSpeed = 5f;
-        [SerializeField] private float sensitivityY = 11;
-        [SerializeField] private float sensitivityX = 8;
+        [SerializeField] private float mouseSensitivity = 80f;
+
+        private float MouseSensitivity => mouseSensitivity / 100;
         
         private GameControls _controls;
         private CharacterController _characterController;
@@ -19,7 +21,13 @@ namespace Player
         private Vector2 _inputDir;
         private Vector2 _lookDelta;
         private Vector2 _rotation;
-
+        
+        // physics
+        [Space]
+        [SerializeField] private float jumpHeight = 1f;
+        private const float Gravity = 9f;
+        private Vector3 _velocity;
+        
         
         private void Start()
         {
@@ -28,26 +36,27 @@ namespace Player
             _controls = new GameControls();
             _controls.PlayerControls.Movement.performed += ctx => _inputDir = ctx.ReadValue<Vector2>();
             _controls.PlayerControls.Movement.canceled += ctx => _inputDir = ctx.ReadValue<Vector2>();
+            _controls.PlayerControls.Jump.performed += _ => HandleJump();
             _controls.CameraControls.Look.performed += ctx => _lookDelta = ctx.ReadValue<Vector2>();
             _controls.Enable();
             
             Cursor.lockState = CursorLockMode.Locked;
             
             // Default as looking forward
-            _rotation = new Vector2(5, 0);
+            _rotation = new Vector2(5, 0); // todo: not works
         }
 
         private void Update()
         {
             HandleLook();
             HandleMovement();
+            UpdatePhysics();
         }
 
         private void HandleLook()
         {
-            var deltaTime = Time.deltaTime;
-            _rotation.x += -_lookDelta.y * sensitivityX * deltaTime;
-            _rotation.y += _lookDelta.x * sensitivityY * deltaTime;
+            _rotation.x += -_lookDelta.y * MouseSensitivity;
+            _rotation.y += _lookDelta.x * MouseSensitivity;
          
             _rotation.x = Mathf.Clamp(_rotation.x, -RotationLimitY, RotationLimitY);
             _rotation.x = Mathf.Clamp(_rotation.x, -360, 360);
@@ -61,13 +70,35 @@ namespace Player
             } 
             
             transform.localRotation = Quaternion.Euler(0f, _rotation.y, 0f);
+        }
+
+        private void LateUpdate()
+        {
             head.localRotation = Quaternion.Euler( _rotation.x, 0f, 0f);
         }
 
         private void HandleMovement()
         {
-            var dir = new Vector3(_inputDir.x, 0, _inputDir.y);
-            _characterController.Move(transform.TransformDirection(dir) * (baseMovementSpeed * Time.deltaTime));
+            _velocity.x = _inputDir.x * baseMovementSpeed;
+            _velocity.z = _inputDir.y * baseMovementSpeed;
+        }
+        
+        private void HandleJump()
+        {
+            // TODO: добавить логику для прыжка по задержке (перед призимлением) путем raycast
+            if (_characterController.isGrounded)
+            {
+                _velocity.y = jumpHeight * Gravity;
+            }
+        }
+
+        private void UpdatePhysics()
+        {
+            var dt = Time.deltaTime;
+            if (_characterController.isGrounded && _velocity.y < 0) _velocity.y = -Gravity * 0.1f;
+            else _velocity.y -= Gravity * dt;
+            
+            _characterController.Move(transform.TransformDirection(_velocity) * dt);
         }
     }
 }
