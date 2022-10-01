@@ -4,18 +4,20 @@ using UnityEngine.ProBuilder;
 
 namespace Player
 {
-    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(CharacterController), typeof(Energy))]
     public class FPSMovement : MonoBehaviour
     {
         [SerializeField] private Transform head;
         [Space]
         [SerializeField] private float baseMovementSpeed = 5f;
+        [SerializeField] private float baseSprintSpeed = 6.5f;
         [SerializeField] private float mouseSensitivity = 80f;
 
         private float MouseSensitivity => mouseSensitivity / 100;
         
         private GameControls _controls;
         private CharacterController _characterController;
+        private Energy _energy;
 
         private const float RotationLimitY = 90;
         private Vector2 _inputDir;
@@ -32,6 +34,7 @@ namespace Player
         private void Start()
         {
             _characterController = GetComponent<CharacterController>();
+            _energy = GetComponent<Energy>();
 
             _controls = new GameControls();
             _controls.PlayerControls.Movement.performed += ctx => _inputDir = ctx.ReadValue<Vector2>();
@@ -79,6 +82,7 @@ namespace Player
 
         private void HandleMovement()
         {
+            if (!_characterController.isGrounded) return;
             _velocity.x = _inputDir.x * baseMovementSpeed;
             _velocity.z = _inputDir.y * baseMovementSpeed;
         }

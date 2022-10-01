@@ -2606,7 +2606,7 @@ MonoBehaviour:
   head: {fileID: 556329319}
   baseMovementSpeed: 5
   mouseSensitivity: 6.5
-  jumpHeight: 1
+  jumpHeight: 0.5
 --- !u!143 &963941939
 CharacterController:
   m_ObjectHideFlags: 0
