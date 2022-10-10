@@ -53,6 +53,24 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""9dd5990e-756f-4ac8-9a9a-251e68340b23"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightMouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""59ce0276-a2aa-46cb-abd9-86f0fb95350b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +150,28 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0f9f73a3-1b15-451c-9068-4c064ce73efb"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a221d9f1-7d12-428a-942c-6235ee4ddd09"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -171,6 +211,8 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_PlayerControls_Movement = m_PlayerControls.FindAction("Movement", throwIfNotFound: true);
         m_PlayerControls_Jump = m_PlayerControls.FindAction("Jump", throwIfNotFound: true);
         m_PlayerControls_Sprint = m_PlayerControls.FindAction("Sprint", throwIfNotFound: true);
+        m_PlayerControls_LeftMouse = m_PlayerControls.FindAction("LeftMouse", throwIfNotFound: true);
+        m_PlayerControls_RightMouse = m_PlayerControls.FindAction("RightMouse", throwIfNotFound: true);
         // Camera Controls
         m_CameraControls = asset.FindActionMap("Camera Controls", throwIfNotFound: true);
         m_CameraControls_Look = m_CameraControls.FindAction("Look", throwIfNotFound: true);
@@ -236,6 +278,8 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerControls_Movement;
     private readonly InputAction m_PlayerControls_Jump;
     private readonly InputAction m_PlayerControls_Sprint;
+    private readonly InputAction m_PlayerControls_LeftMouse;
+    private readonly InputAction m_PlayerControls_RightMouse;
     public struct PlayerControlsActions
     {
         private @GameControls m_Wrapper;
@@ -243,6 +287,8 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_PlayerControls_Movement;
         public InputAction @Jump => m_Wrapper.m_PlayerControls_Jump;
         public InputAction @Sprint => m_Wrapper.m_PlayerControls_Sprint;
+        public InputAction @LeftMouse => m_Wrapper.m_PlayerControls_LeftMouse;
+        public InputAction @RightMouse => m_Wrapper.m_PlayerControls_RightMouse;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -261,6 +307,12 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Sprint.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnSprint;
                 @Sprint.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnSprint;
                 @Sprint.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnSprint;
+                @LeftMouse.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnLeftMouse;
+                @LeftMouse.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnLeftMouse;
+                @LeftMouse.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnLeftMouse;
+                @RightMouse.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRightMouse;
+                @RightMouse.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRightMouse;
+                @RightMouse.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRightMouse;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -274,6 +326,12 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @LeftMouse.started += instance.OnLeftMouse;
+                @LeftMouse.performed += instance.OnLeftMouse;
+                @LeftMouse.canceled += instance.OnLeftMouse;
+                @RightMouse.started += instance.OnRightMouse;
+                @RightMouse.performed += instance.OnRightMouse;
+                @RightMouse.canceled += instance.OnRightMouse;
             }
         }
     }
@@ -316,6 +374,8 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnLeftMouse(InputAction.CallbackContext context);
+        void OnRightMouse(InputAction.CallbackContext context);
     }
     public interface ICameraControlsActions
     {

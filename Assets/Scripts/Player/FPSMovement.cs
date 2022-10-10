@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.ProBuilder;
+using UnityEngine.Serialization;
 
 namespace Player
 {
@@ -8,25 +9,28 @@ namespace Player
     public class FPSMovement : MonoBehaviour
     {
         [SerializeField] private Transform head;
-        [Space]
+        [Header("Movement")]
         [SerializeField] private float baseMovementSpeed = 5f;
+        [SerializeField] private float jumpEnergyCost = 10f;
+        [SerializeField] private float jumpHeight = 1f;
+        [Header("Sprint")]
         [SerializeField] private float baseSprintSpeed = 6.5f;
+        [SerializeField] private float sprintEnergyCostPerSec = 10f;
+        [Header("Mouse")]
         [SerializeField] private float mouseSensitivity = 80f;
 
         private float MouseSensitivity => mouseSensitivity / 100;
-        
+
         private GameControls _controls;
         private CharacterController _characterController;
         private Energy _energy;
 
         private const float RotationLimitY = 90;
+        private bool _isSprinting = false;
         private Vector2 _inputDir;
         private Vector2 _lookDelta;
         private Vector2 _rotation;
         
-        // physics
-        [Space]
-        [SerializeField] private float jumpHeight = 1f;
         private const float Gravity = 9f;
         private Vector3 _velocity;
         
@@ -39,11 +43,13 @@ namespace Player
             _controls = new GameControls();
             _controls.PlayerControls.Movement.performed += ctx => _inputDir = ctx.ReadValue<Vector2>();
             _controls.PlayerControls.Movement.canceled += ctx => _inputDir = ctx.ReadValue<Vector2>();
+            _controls.PlayerControls.Sprint.performed += _ => _isSprinting = true;
+            _controls.PlayerControls.Sprint.canceled += _ => _isSprinting = false;
             _controls.PlayerControls.Jump.performed += _ => HandleJump();
             _controls.CameraControls.Look.performed += ctx => _lookDelta = ctx.ReadValue<Vector2>();
             _controls.Enable();
             
-            Cursor.lockState = CursorLockMode.Locked;
+            // Cursor.lockState = CursorLockMode.Locked;
             
             // Default as looking forward
             _rotation = new Vector2(5, 0); // todo: not works
@@ -83,12 +89,19 @@ namespace Player
         private void HandleMovement()
         {
             if (!_characterController.isGrounded) return;
-            _velocity.x = _inputDir.x * baseMovementSpeed;
-            _velocity.z = _inputDir.y * baseMovementSpeed;
+
+            var speed = baseMovementSpeed;
+            if (_isSprinting && _energy.UseStaminaAmount(sprintEnergyCostPerSec * Time.deltaTime))
+            {
+                speed = baseSprintSpeed;
+            }
+            _velocity.x = _inputDir.x * speed;
+            _velocity.z = _inputDir.y * speed;
         }
         
         private void HandleJump()
         {
+            if (!_energy.UseStaminaAmount(jumpEnergyCost)) return;
             // TODO: добавить логику для прыжка по задержке (перед призимлением) путем raycast
             if (_characterController.isGrounded)
             {

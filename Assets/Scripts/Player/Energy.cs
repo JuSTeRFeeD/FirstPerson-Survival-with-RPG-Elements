@@ -18,7 +18,7 @@ namespace Player
         
         private void FixedUpdate()
         {
-            var dt = Time.fixedDeltaTime;
+            var dt = Time.deltaTime;
             if (_currentDelay >= 0)
             {
                 _currentDelay -= dt;
@@ -34,7 +34,7 @@ namespace Player
         {
             if (currentValue <= toUseAmount) return false;
             currentValue -= toUseAmount;
-            _currentDelay -= resetAmountPerSec;
+            _currentDelay = delayBeforeResets;
             return true;
         }
     }
