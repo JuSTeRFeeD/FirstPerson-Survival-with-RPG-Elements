@@ -112,7 +112,13 @@ namespace Player
 
         private void HandleMovement()
         {
-            if (!_isActiveMovement ||!_characterController.isGrounded) return;
+            if (!_isActiveMovement)
+            {
+                _velocity.x = 0;
+                _velocity.y = 0; // TODO: Temporary. Need to decrease values!
+                return;
+            }
+            if (!_characterController.isGrounded) return;
 
             var speed = baseMovementSpeed;
             if (_isSprinting && _energy.UseStaminaAmount(sprintEnergyCostPerSec * Time.deltaTime))
