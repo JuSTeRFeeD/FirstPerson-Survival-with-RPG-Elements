@@ -24,7 +24,7 @@ namespace Player
         [Header("Mouse")]
         [SerializeField] private float mouseSensitivity = 80f;
 
-        private float MouseSensitivity => mouseSensitivity;
+        private float MouseSensitivity => mouseSensitivity / 100;
 
         private GameControls _controls;
         private CharacterController _characterController;
@@ -59,6 +59,7 @@ namespace Player
             _rotation = new Vector2(5, 0); // todo: not works
 
             _gameManager.PlayerGameStateChangedEvent += GameStateChanged;
+            GameStateChanged(_gameManager.PlayerGameState);
         }
 
         private void GameStateChanged(PlayerGameState state)
@@ -86,9 +87,8 @@ namespace Player
         {
             if (!_isActiveLookRotation) return;
 
-            var dt = Time.deltaTime;
-            _rotation.x += -_lookDelta.y * MouseSensitivity * dt;
-            _rotation.y += _lookDelta.x * MouseSensitivity * dt;
+            _rotation.x += -_lookDelta.y * MouseSensitivity;
+            _rotation.y += _lookDelta.x * MouseSensitivity;
          
             _rotation.x = Mathf.Clamp(_rotation.x, -RotationLimitY, RotationLimitY);
             _rotation.x = Mathf.Clamp(_rotation.x, -360, 360);
