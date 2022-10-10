@@ -71,6 +71,15 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""ef1c93c6-f9d6-4a7c-9d7b-bd0612f4164f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,17 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""action"": ""RightMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3c023c1b-eb50-46c5-a584-88d43488792f"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -202,6 +222,74 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Menu Controls"",
+            ""id"": ""10dfc408-ad58-4d87-883f-396738d52fad"",
+            ""actions"": [
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""c860de1d-8917-4f7a-b353-c8054dc394f6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""29004df9-5b59-442d-b2f5-ef817e5c9bd1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenSkillTree"",
+                    ""type"": ""Button"",
+                    ""id"": ""c674c18b-38db-4b42-a4b9-83e6474be65f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ea91d392-ea94-4bc6-a4ce-de63bd6cecfc"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""da677818-fddb-45f0-958c-cf323de0899a"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b104ba75-8d99-446f-9a41-f2de2772526f"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenSkillTree"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -213,9 +301,15 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_PlayerControls_Sprint = m_PlayerControls.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerControls_LeftMouse = m_PlayerControls.FindAction("LeftMouse", throwIfNotFound: true);
         m_PlayerControls_RightMouse = m_PlayerControls.FindAction("RightMouse", throwIfNotFound: true);
+        m_PlayerControls_Interact = m_PlayerControls.FindAction("Interact", throwIfNotFound: true);
         // Camera Controls
         m_CameraControls = asset.FindActionMap("Camera Controls", throwIfNotFound: true);
         m_CameraControls_Look = m_CameraControls.FindAction("Look", throwIfNotFound: true);
+        // Menu Controls
+        m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
+        m_MenuControls_Escape = m_MenuControls.FindAction("Escape", throwIfNotFound: true);
+        m_MenuControls_OpenInventory = m_MenuControls.FindAction("OpenInventory", throwIfNotFound: true);
+        m_MenuControls_OpenSkillTree = m_MenuControls.FindAction("OpenSkillTree", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -280,6 +374,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerControls_Sprint;
     private readonly InputAction m_PlayerControls_LeftMouse;
     private readonly InputAction m_PlayerControls_RightMouse;
+    private readonly InputAction m_PlayerControls_Interact;
     public struct PlayerControlsActions
     {
         private @GameControls m_Wrapper;
@@ -289,6 +384,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_PlayerControls_Sprint;
         public InputAction @LeftMouse => m_Wrapper.m_PlayerControls_LeftMouse;
         public InputAction @RightMouse => m_Wrapper.m_PlayerControls_RightMouse;
+        public InputAction @Interact => m_Wrapper.m_PlayerControls_Interact;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -313,6 +409,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @RightMouse.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRightMouse;
                 @RightMouse.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRightMouse;
                 @RightMouse.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRightMouse;
+                @Interact.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -332,6 +431,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @RightMouse.started += instance.OnRightMouse;
                 @RightMouse.performed += instance.OnRightMouse;
                 @RightMouse.canceled += instance.OnRightMouse;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -369,6 +471,55 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         }
     }
     public CameraControlsActions @CameraControls => new CameraControlsActions(this);
+
+    // Menu Controls
+    private readonly InputActionMap m_MenuControls;
+    private IMenuControlsActions m_MenuControlsActionsCallbackInterface;
+    private readonly InputAction m_MenuControls_Escape;
+    private readonly InputAction m_MenuControls_OpenInventory;
+    private readonly InputAction m_MenuControls_OpenSkillTree;
+    public struct MenuControlsActions
+    {
+        private @GameControls m_Wrapper;
+        public MenuControlsActions(@GameControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Escape => m_Wrapper.m_MenuControls_Escape;
+        public InputAction @OpenInventory => m_Wrapper.m_MenuControls_OpenInventory;
+        public InputAction @OpenSkillTree => m_Wrapper.m_MenuControls_OpenSkillTree;
+        public InputActionMap Get() { return m_Wrapper.m_MenuControls; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MenuControlsActions set) { return set.Get(); }
+        public void SetCallbacks(IMenuControlsActions instance)
+        {
+            if (m_Wrapper.m_MenuControlsActionsCallbackInterface != null)
+            {
+                @Escape.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnEscape;
+                @Escape.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnEscape;
+                @Escape.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnEscape;
+                @OpenInventory.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenInventory;
+                @OpenInventory.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenInventory;
+                @OpenInventory.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenInventory;
+                @OpenSkillTree.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenSkillTree;
+                @OpenSkillTree.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenSkillTree;
+                @OpenSkillTree.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenSkillTree;
+            }
+            m_Wrapper.m_MenuControlsActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Escape.started += instance.OnEscape;
+                @Escape.performed += instance.OnEscape;
+                @Escape.canceled += instance.OnEscape;
+                @OpenInventory.started += instance.OnOpenInventory;
+                @OpenInventory.performed += instance.OnOpenInventory;
+                @OpenInventory.canceled += instance.OnOpenInventory;
+                @OpenSkillTree.started += instance.OnOpenSkillTree;
+                @OpenSkillTree.performed += instance.OnOpenSkillTree;
+                @OpenSkillTree.canceled += instance.OnOpenSkillTree;
+            }
+        }
+    }
+    public MenuControlsActions @MenuControls => new MenuControlsActions(this);
     public interface IPlayerControlsActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -376,9 +527,16 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnLeftMouse(InputAction.CallbackContext context);
         void OnRightMouse(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
     public interface ICameraControlsActions
     {
         void OnLook(InputAction.CallbackContext context);
+    }
+    public interface IMenuControlsActions
+    {
+        void OnEscape(InputAction.CallbackContext context);
+        void OnOpenInventory(InputAction.CallbackContext context);
+        void OnOpenSkillTree(InputAction.CallbackContext context);
     }
 }

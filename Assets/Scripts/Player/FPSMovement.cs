@@ -1,4 +1,5 @@
 using System;
+using Managers;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 using UnityEngine.Serialization;
@@ -8,6 +9,10 @@ namespace Player
     [RequireComponent(typeof(CharacterController), typeof(Energy))]
     public class FPSMovement : MonoBehaviour
     {
+        private GameManager _gameManager;
+        private bool _isActiveLookRotation;
+        private bool _isActiveMovement;
+            
         [SerializeField] private Transform head;
         [Header("Movement")]
         [SerializeField] private float baseMovementSpeed = 5f;
@@ -19,7 +24,7 @@ namespace Player
         [Header("Mouse")]
         [SerializeField] private float mouseSensitivity = 80f;
 
-        private float MouseSensitivity => mouseSensitivity / 100;
+        private float MouseSensitivity => mouseSensitivity;
 
         private GameControls _controls;
         private CharacterController _characterController;
@@ -37,22 +42,37 @@ namespace Player
         
         private void Start()
         {
+            _gameManager = GameManager.Instance;
+            
             _characterController = GetComponent<CharacterController>();
             _energy = GetComponent<Energy>();
 
-            _controls = new GameControls();
+            _controls = GameManager.GameControls;
             _controls.PlayerControls.Movement.performed += ctx => _inputDir = ctx.ReadValue<Vector2>();
             _controls.PlayerControls.Movement.canceled += ctx => _inputDir = ctx.ReadValue<Vector2>();
             _controls.PlayerControls.Sprint.performed += _ => _isSprinting = true;
             _controls.PlayerControls.Sprint.canceled += _ => _isSprinting = false;
             _controls.PlayerControls.Jump.performed += _ => HandleJump();
             _controls.CameraControls.Look.performed += ctx => _lookDelta = ctx.ReadValue<Vector2>();
-            _controls.Enable();
-            
-            // Cursor.lockState = CursorLockMode.Locked;
-            
+
             // Default as looking forward
             _rotation = new Vector2(5, 0); // todo: not works
+
+            _gameManager.PlayerGameStateChangedEvent += GameStateChanged;
+        }
+
+        private void GameStateChanged(PlayerGameState state)
+        {
+            var isPlaying = state == PlayerGameState.Playing;
+            SwitchCursorLock(isPlaying);
+            _isActiveLookRotation = isPlaying;
+            _isActiveMovement = state != PlayerGameState.Menu && state != PlayerGameState.SkillTree;
+        }
+
+        private static void SwitchCursorLock(bool isLocked)
+        {
+            Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !isLocked;
         }
 
         private void Update()
@@ -64,11 +84,15 @@ namespace Player
 
         private void HandleLook()
         {
-            _rotation.x += -_lookDelta.y * MouseSensitivity;
-            _rotation.y += _lookDelta.x * MouseSensitivity;
+            if (!_isActiveLookRotation) return;
+
+            var dt = Time.deltaTime;
+            _rotation.x += -_lookDelta.y * MouseSensitivity * dt;
+            _rotation.y += _lookDelta.x * MouseSensitivity * dt;
          
             _rotation.x = Mathf.Clamp(_rotation.x, -RotationLimitY, RotationLimitY);
             _rotation.x = Mathf.Clamp(_rotation.x, -360, 360);
+            
             if (_rotation.x > 360f)
             {
                 _rotation.x -= 360f;
@@ -88,7 +112,7 @@ namespace Player
 
         private void HandleMovement()
         {
-            if (!_characterController.isGrounded) return;
+            if (!_isActiveMovement ||!_characterController.isGrounded) return;
 
             var speed = baseMovementSpeed;
             if (_isSprinting && _energy.UseStaminaAmount(sprintEnergyCostPerSec * Time.deltaTime))

@@ -1,18 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class MenusManager : MonoBehaviour
+namespace Managers
 {
-    // Start is called before the first frame update
-    void Start()
+    public class MenusManager : MonoBehaviour
     {
-        
-    }
+        [SerializeField] private GameObject menu;
+        [SerializeField] private GameObject inventory;
+        [SerializeField] private GameObject skillsTree;
+        [SerializeField] private GameObject playerAim;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private GameManager _gameManager;
+
+        private void Start()
+        {
+            _gameManager = GameManager.Instance;
+            _gameManager.PlayerGameStateChangedEvent += GameStateChanged;
+            GameStateChanged(_gameManager.PlayerGameState);
+        }
+
+        private void GameStateChanged(PlayerGameState state)
+        {
+            menu.SetActive(state == PlayerGameState.Menu);
+            inventory.SetActive(state == PlayerGameState.Inventory);
+            skillsTree.SetActive(state == PlayerGameState.SkillTree);
+            playerAim.SetActive(state == PlayerGameState.Playing);
+        }
     }
 }
