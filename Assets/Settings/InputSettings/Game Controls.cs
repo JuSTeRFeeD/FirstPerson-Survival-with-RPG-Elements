@@ -207,6 +207,15 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""69b9abab-4993-4c56-9488-a05c8cce8691"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -218,6 +227,17 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5a420904-c6f4-4ffb-b95d-58b25148d7b8"",
+                    ""path"": ""<VirtualMouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -305,6 +325,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         // Camera Controls
         m_CameraControls = asset.FindActionMap("Camera Controls", throwIfNotFound: true);
         m_CameraControls_Look = m_CameraControls.FindAction("Look", throwIfNotFound: true);
+        m_CameraControls_MousePosition = m_CameraControls.FindAction("MousePosition", throwIfNotFound: true);
         // Menu Controls
         m_MenuControls = asset.FindActionMap("Menu Controls", throwIfNotFound: true);
         m_MenuControls_Escape = m_MenuControls.FindAction("Escape", throwIfNotFound: true);
@@ -443,11 +464,13 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_CameraControls;
     private ICameraControlsActions m_CameraControlsActionsCallbackInterface;
     private readonly InputAction m_CameraControls_Look;
+    private readonly InputAction m_CameraControls_MousePosition;
     public struct CameraControlsActions
     {
         private @GameControls m_Wrapper;
         public CameraControlsActions(@GameControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Look => m_Wrapper.m_CameraControls_Look;
+        public InputAction @MousePosition => m_Wrapper.m_CameraControls_MousePosition;
         public InputActionMap Get() { return m_Wrapper.m_CameraControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -460,6 +483,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Look.started -= m_Wrapper.m_CameraControlsActionsCallbackInterface.OnLook;
                 @Look.performed -= m_Wrapper.m_CameraControlsActionsCallbackInterface.OnLook;
                 @Look.canceled -= m_Wrapper.m_CameraControlsActionsCallbackInterface.OnLook;
+                @MousePosition.started -= m_Wrapper.m_CameraControlsActionsCallbackInterface.OnMousePosition;
+                @MousePosition.performed -= m_Wrapper.m_CameraControlsActionsCallbackInterface.OnMousePosition;
+                @MousePosition.canceled -= m_Wrapper.m_CameraControlsActionsCallbackInterface.OnMousePosition;
             }
             m_Wrapper.m_CameraControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -467,6 +493,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Look.started += instance.OnLook;
                 @Look.performed += instance.OnLook;
                 @Look.canceled += instance.OnLook;
+                @MousePosition.started += instance.OnMousePosition;
+                @MousePosition.performed += instance.OnMousePosition;
+                @MousePosition.canceled += instance.OnMousePosition;
             }
         }
     }
@@ -532,6 +561,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     public interface ICameraControlsActions
     {
         void OnLook(InputAction.CallbackContext context);
+        void OnMousePosition(InputAction.CallbackContext context);
     }
     public interface IMenuControlsActions
     {

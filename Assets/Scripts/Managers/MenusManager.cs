@@ -26,5 +26,11 @@ namespace Managers
             skillsTree.SetActive(state == PlayerGameState.SkillTree);
             playerAim.SetActive(state == PlayerGameState.Playing);
         }
+        
+        public void ReturnGame()
+        {
+            if (_gameManager.PlayerGameState != PlayerGameState.Menu) return;
+            _gameManager.SetGameState(PlayerGameState.Playing);
+        }
     }
 }

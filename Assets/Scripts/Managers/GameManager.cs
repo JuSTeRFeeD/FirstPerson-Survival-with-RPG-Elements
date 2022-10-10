@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Managers
 {
@@ -56,10 +54,11 @@ namespace Managers
         public delegate void OnPlayerGameStateChanged(PlayerGameState state);
         public OnPlayerGameStateChanged PlayerGameStateChangedEvent;
 
-        private void SetGameState(PlayerGameState state)
+        public void SetGameState(PlayerGameState state)
         {
             PlayerGameState = state;
             PlayerGameStateChangedEvent?.Invoke(state);
         }
+
     }
 }

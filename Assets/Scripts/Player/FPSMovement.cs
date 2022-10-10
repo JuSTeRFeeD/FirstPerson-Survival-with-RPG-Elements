@@ -1,8 +1,6 @@
-using System;
 using Managers;
 using UnityEngine;
-using UnityEngine.ProBuilder;
-using UnityEngine.Serialization;
+using Utils;
 
 namespace Player
 {
@@ -31,7 +29,7 @@ namespace Player
         private Energy _energy;
 
         private const float RotationLimitY = 90;
-        private bool _isSprinting = false;
+        private bool _isSprinting;
         private Vector2 _inputDir;
         private Vector2 _lookDelta;
         private Vector2 _rotation;
@@ -42,6 +40,10 @@ namespace Player
         
         private void Start()
         {
+#if UNITY_EDITOR
+            NullRefCheck.CheckNullable(head);
+#endif
+            
             _gameManager = GameManager.Instance;
             
             _characterController = GetComponent<CharacterController>();
@@ -133,6 +135,7 @@ namespace Player
         {
             if (!_energy.UseStaminaAmount(jumpEnergyCost)) return;
             // TODO: добавить логику для прыжка по задержке (перед призимлением) путем raycast
+            // кратко: нажимаешь пробел, но не приземлился - прыжок произойдет автоматически чуть позже (когда упадет чар)
             if (_characterController.isGrounded)
             {
                 _velocity.y = jumpHeight * Gravity;
