@@ -17,7 +17,7 @@ namespace Entities
         public float health;
         public float healthRegeneration;
 
-        public float moveSpeed = 1;
+        public float moveSpeed;
         
         public string GetFormattedStats()
         {

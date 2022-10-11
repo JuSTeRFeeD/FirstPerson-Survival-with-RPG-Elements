@@ -7,11 +7,23 @@ namespace Inventory
 {
     public class InventoryContainer : MonoBehaviour
     {
-        [Tooltip("Need to set only if isMineInventory")]
-        [SerializeField] private InventoryUI inventoryUI;
-        [SerializeField] private bool isMineInventory;
+        [Header("Name *using only for identify")]
+        // DONT USE IN CODE
+        public string invName = "";
         
-        public InventoryStuck[] items = new InventoryStuck[17]; // TODO: make readonly!!!
+        [Header("Properties")]
+        
+        [Tooltip("Need to set only if isMineOpeningInventory")]
+        [SerializeField] private InventoryUI inventoryUI;
+        
+        [Tooltip("Загружается при открытии меню")]
+        [SerializeField] private bool isMineOpeningInventory;
+        
+        [Tooltip("Подгружен изначально, перекрывает isMineOpeningInventory")]
+        [SerializeField] private bool isAlwaysActive;
+
+        public int itemsCount = 17;
+        public InventoryStuck[] items; // TODO: make readonly!!!
         public const uint StackSize = 256;
     
         public delegate void OnItemChange(InventoryStuck item, int slotIndex);
@@ -19,12 +31,17 @@ namespace Inventory
 
         private void Start()
         {
+            items = new InventoryStuck[itemsCount == 0 ? 17 : itemsCount];
             for (var i = 0; i < items.Length; i++)
             {
                 items[i] = new InventoryStuck();
             }
 
-            if (isMineInventory)
+            if (isAlwaysActive)
+            {
+                inventoryUI.OpenInventory(this);
+            }
+            else if (isMineOpeningInventory)
             {
                 GameManager.Instance.PlayerGameStateChangedEvent += HandlePlayerInvOpen;
             }
@@ -38,15 +55,15 @@ namespace Inventory
 
         public void AddItem(InventoryStuck itemStuck)
         {
-            AddItem(itemStuck.Item, itemStuck.Amount);
+            AddItem(itemStuck.item, itemStuck.amount);
         }
         
         public InventoryStuck AddItem(BaseItem item, int amount)
         {
             var stuck = new InventoryStuck
             {
-                Item = item,
-                Amount = amount
+                item = item,
+                amount = amount
             };
             if (items.Length >= StackSize) return stuck;
 
@@ -54,11 +71,11 @@ namespace Inventory
             {
                 for (var i = 0; i < items.Length; i++)
                 {
-                    if (items[i].Item.ItemName != item.ItemName || items[i].Amount >= StackSize) continue;
+                    if (items[i].item.ItemName != item.ItemName || items[i].amount >= StackSize) continue;
 
                     // TODO: handle to add multi items by stuck
 
-                    items[i].Amount += amount;
+                    items[i].amount += amount;
                     ItemChangeEvent?.Invoke(items[i], i);
                     return null;
                 }
@@ -67,8 +84,8 @@ namespace Inventory
             for (var i = 0; i < items.Length; i++)
             {
                 if (!items[i].IsEmpty) continue;
-                items[i].Item = item;
-                items[i].Amount = 1;
+                items[i].item = item;
+                items[i].amount = 1;
                 ItemChangeEvent?.Invoke(items[i], i);
                 return null; 
             }

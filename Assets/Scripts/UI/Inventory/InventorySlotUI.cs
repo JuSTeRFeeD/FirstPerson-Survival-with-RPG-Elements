@@ -1,3 +1,4 @@
+using Inventory;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -22,7 +23,6 @@ namespace UI.Inventory
         
         private Vector3 _initDragPos;
         
-
         private void Awake()
         {
             itemBackgroundImage = GetComponent<Image>();
@@ -51,10 +51,10 @@ namespace UI.Inventory
             if (stuck != null) 
             {
                 UpdateInfo(
-                    stuck.Item != null 
-                        ? stuck.Item.ItemIcon 
+                    stuck.item != null 
+                        ? stuck.item.ItemIcon 
                         : null,
-                    stuck.Amount);
+                    stuck.amount);
                 
             }
             else
@@ -68,6 +68,10 @@ namespace UI.Inventory
             itemImage.enabled = icon != null;
             itemImage.sprite = icon;
             _hasItem = amount > 0;
+            
+            // Not need to set amount for EquipmentItems
+            if (amountText == null) return;
+            
             if (amount > 1)
             {
                 amountText.text = amount.ToString();
@@ -82,15 +86,20 @@ namespace UI.Inventory
         public void OnPointerEnter(PointerEventData eventData)
         {
             itemBackgroundImage.color = Color.black;
+            if (_hasItem)
+            {
+                InventoryUI.inventoryManager.ShowItemTooltip(InventoryUI.OpenedInventory.items[SlotIndex]);
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             itemBackgroundImage.color = _initBgColor;
+            InventoryUI.inventoryManager.ShowItemTooltip(null);
         }
 
         // Drag&Drop items
-        public void ResetSlotPosition()
+        public void ResetSlot()
         {
             slotContainer.SetParent(transform);
             slotContainer.localPosition = _initDragPos;
@@ -107,13 +116,13 @@ namespace UI.Inventory
         public void OnEndDrag(PointerEventData eventData)
         {
             if (!_hasItem) return;
-            ResetSlotPosition();
+            ResetSlot();
         }
 
         public void OnDrop(PointerEventData eventData)
         {
             var draggingSlot = InventoryUI.inventoryManager.draggingSlot;
-            ResetSlotPosition();
+            ResetSlot();
             if (!draggingSlot) return;
 
             if (!eventData.hovered[0].TryGetComponent(out InventorySlotUI dropSlot)) return;
