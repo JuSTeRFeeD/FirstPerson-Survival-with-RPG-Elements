@@ -1,6 +1,5 @@
 ﻿using System;
 using Items;
-using UnityEngine.Serialization;
 
 namespace Inventory
 {

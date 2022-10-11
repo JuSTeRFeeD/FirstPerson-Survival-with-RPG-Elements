@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Items;
 using Managers;
 using UI.Inventory;
@@ -7,6 +8,7 @@ namespace Inventory
 {
     public class InventoryContainer : MonoBehaviour
     {
+        public List<InventoryStuck> test = new List<InventoryStuck>();
         [Header("Name *using only for identify")]
         // DONT USE IN CODE
         public string invName = "";
@@ -44,6 +46,12 @@ namespace Inventory
             else if (isMineOpeningInventory)
             {
                 GameManager.Instance.PlayerGameStateChangedEvent += HandlePlayerInvOpen;
+                
+                // todo: del!
+                foreach (var t in test)
+                {
+                    AddItem(t);
+                }
             }
         }
         
@@ -71,11 +79,12 @@ namespace Inventory
             {
                 for (var i = 0; i < items.Length; i++)
                 {
-                    if (items[i].item.ItemName != item.ItemName || items[i].amount >= StackSize) continue;
-
-                    // TODO: handle to add multi items by stuck
-
-                    items[i].amount += amount;
+                    if (items[i].IsEmpty || 
+                        items[i].item.ItemName != item.ItemName || 
+                        items[i].amount >= StackSize
+                        ) continue;
+                    
+                    items[i].amount += amount; // TODO: handle to add multi items by stuck
                     ItemChangeEvent?.Invoke(items[i], i);
                     return null;
                 }
@@ -85,7 +94,7 @@ namespace Inventory
             {
                 if (!items[i].IsEmpty) continue;
                 items[i].item = item;
-                items[i].amount = 1;
+                items[i].amount = amount; // TODO: handle to add multi items by stuck
                 ItemChangeEvent?.Invoke(items[i], i);
                 return null; 
             }
@@ -100,16 +109,35 @@ namespace Inventory
             ItemChangeEvent?.Invoke(items[indexSecond], indexSecond);
         }
         
-        public void MoveItemToContainer(InventoryContainer container, int itemIndex)
+        public void MoveItemToContainer(InventoryContainer container, int slotIndex)
         {
-            container.AddItem(RemoveItem(itemIndex));
+            Debug.Log($"Moving item from {invName} to {container.invName} | item {slotIndex}");
+            container.AddItem(RemoveItem(slotIndex));
         }
 
-        private InventoryStuck RemoveItem(int index)
+        /// <summary>
+        /// Swap item between two inventory containers
+        /// </summary>
+        /// <param name="container">Other container</param>
+        /// <param name="slotIndex">Current container item slot index</param>
+        /// <param name="dropSlotIndex">Other container item slot index</param>
+        public void SwapItemWithContainer(InventoryContainer container, int slotIndex, int dropSlotIndex)
         {
-            items[index].Clear();
-            ItemChangeEvent?.Invoke(null, index);
-            return items[index];
+            (container.items[dropSlotIndex], items[slotIndex]) = (items[slotIndex], container.items[dropSlotIndex]);
+            ItemChangeEvent?.Invoke(items[slotIndex], slotIndex);
+            container.ItemChangeEvent?.Invoke(container.items[dropSlotIndex], dropSlotIndex);
+        }
+
+        private InventoryStuck RemoveItem(int slotIndex)
+        {
+            var item = new InventoryStuck
+            {
+                item = items[slotIndex].item,
+                amount = items[slotIndex].amount
+            };
+            items[slotIndex].Clear();
+            ItemChangeEvent?.Invoke(null, slotIndex);
+            return item;
         }
     
         public void DropItemToWorld(BaseItem item)

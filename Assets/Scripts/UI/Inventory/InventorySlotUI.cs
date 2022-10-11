@@ -126,11 +126,12 @@ namespace UI.Inventory
             if (!draggingSlot) return;
 
             if (!eventData.hovered[0].TryGetComponent(out InventorySlotUI dropSlot)) return;
-            if (draggingSlot.SlotIndex == dropSlot.SlotIndex) return;
 
             // Same Inventory Container
             if (draggingSlot.InventoryUI.GetInstanceID() == dropSlot.InventoryUI.GetInstanceID())
             {
+                if (draggingSlot.SlotIndex == dropSlot.SlotIndex) return;
+                
                 draggingSlot.InventoryUI.OpenedInventory.SwapItems(
                     draggingSlot.SlotIndex, 
                     dropSlot.SlotIndex);
@@ -139,9 +140,10 @@ namespace UI.Inventory
             
             // Other Inventory Container
             // todo:  MoveItemToContainer юзать при клике шифт поди надо! ТУТ ИСПОЛЬЗОВАТЬ ДРУГОЕ НИД-====-=-=-=-=-=
-            draggingSlot.InventoryUI.OpenedInventory.MoveItemToContainer(
+            draggingSlot.InventoryUI.OpenedInventory.SwapItemWithContainer(
                 dropSlot.InventoryUI.OpenedInventory, 
-                draggingSlot.SlotIndex);
+                draggingSlot.SlotIndex,
+                dropSlot.SlotIndex);
         }
 
         public void OnDrag(PointerEventData eventData)
