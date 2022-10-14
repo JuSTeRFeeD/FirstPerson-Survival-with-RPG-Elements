@@ -6,7 +6,7 @@
         Body,
         Boots,
         Shoulder,
-        LeftHand,
-        RightHand,
+        TwoHandedWeapon,
+        OneHandedWeapon,
     }
 }

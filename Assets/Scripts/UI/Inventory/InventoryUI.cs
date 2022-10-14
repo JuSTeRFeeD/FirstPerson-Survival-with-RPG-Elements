@@ -43,8 +43,9 @@ namespace UI.Inventory
             }
         }
 
-        private void HandleItemChange(InventoryStuck stuck, int slotIndex)
+        private void HandleItemChange(ItemStuck stuck, int slotIndex)
         {
+            Debug.Log($"Item Change {slotIndex} at {OpenedInventory.invName}");
             _cells[slotIndex].SetData(stuck);
         }
         

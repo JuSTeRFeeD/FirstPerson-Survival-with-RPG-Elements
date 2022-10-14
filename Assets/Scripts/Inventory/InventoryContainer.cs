@@ -3,12 +3,13 @@ using Items;
 using Managers;
 using UI.Inventory;
 using UnityEngine;
+using Utils;
 
 namespace Inventory
 {
     public class InventoryContainer : MonoBehaviour
     {
-        public List<InventoryStuck> test = new List<InventoryStuck>();
+        public List<ItemStuck> test = new List<ItemStuck>();
         [Header("Name *using only for identify")]
         // DONT USE IN CODE
         public string invName = "";
@@ -25,18 +26,22 @@ namespace Inventory
         [SerializeField] private bool isAlwaysActive;
 
         public int itemsCount = 17;
-        public InventoryStuck[] items; // TODO: make readonly!!!
+        public ItemStuck[] items; // TODO: make readonly!!!
         public const uint StackSize = 256;
     
-        public delegate void OnItemChange(InventoryStuck item, int slotIndex);
+        public delegate void OnItemChange(ItemStuck item, int slotIndex);
         public OnItemChange ItemChangeEvent;
 
         private void Start()
         {
-            items = new InventoryStuck[itemsCount == 0 ? 17 : itemsCount];
+#if UNITY_EDITOR
+            NullRefCheck.CheckNullable(inventoryUI);
+#endif
+            
+            items = new ItemStuck[itemsCount == 0 ? 17 : itemsCount];
             for (var i = 0; i < items.Length; i++)
             {
-                items[i] = new InventoryStuck();
+                items[i] = new ItemStuck();
             }
 
             if (isAlwaysActive)
@@ -47,7 +52,7 @@ namespace Inventory
             {
                 GameManager.Instance.PlayerGameStateChangedEvent += HandlePlayerInvOpen;
                 
-                // todo: del!
+                // todo: del! for tests
                 foreach (var t in test)
                 {
                     AddItem(t);
@@ -61,14 +66,14 @@ namespace Inventory
             inventoryUI.OpenInventory(this);
         }
 
-        public void AddItem(InventoryStuck itemStuck)
+        public ItemStuck AddItem(ItemStuck itemStuck)
         {
-            AddItem(itemStuck.item, itemStuck.amount);
+            return AddItem(itemStuck.item, itemStuck.amount);
         }
         
-        public InventoryStuck AddItem(BaseItem item, int amount)
+        public ItemStuck AddItem(BaseItem item, int amount)
         {
-            var stuck = new InventoryStuck
+            var stuck = new ItemStuck
             {
                 item = item,
                 amount = amount
@@ -112,7 +117,10 @@ namespace Inventory
         public void MoveItemToContainer(InventoryContainer container, int slotIndex)
         {
             Debug.Log($"Moving item from {invName} to {container.invName} | item {slotIndex}");
-            container.AddItem(RemoveItem(slotIndex));
+            if (container.AddItem(items[slotIndex]) is null)
+            {
+                RemoveItem(slotIndex);
+            }
         }
 
         /// <summary>
@@ -128,16 +136,16 @@ namespace Inventory
             container.ItemChangeEvent?.Invoke(container.items[dropSlotIndex], dropSlotIndex);
         }
 
-        private InventoryStuck RemoveItem(int slotIndex)
+        public ItemStuck RemoveItem(int slotIndex)
         {
-            var item = new InventoryStuck
+            var stuck = new ItemStuck
             {
                 item = items[slotIndex].item,
                 amount = items[slotIndex].amount
             };
             items[slotIndex].Clear();
             ItemChangeEvent?.Invoke(null, slotIndex);
-            return item;
+            return stuck;
         }
     
         public void DropItemToWorld(BaseItem item)

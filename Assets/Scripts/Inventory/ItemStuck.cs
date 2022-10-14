@@ -4,7 +4,7 @@ using Items;
 namespace Inventory
 {
     [Serializable]
-    public class InventoryStuck
+    public class ItemStuck
     {
         public BaseItem item;
         public int amount;

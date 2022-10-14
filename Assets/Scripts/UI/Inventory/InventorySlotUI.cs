@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 namespace UI.Inventory
 {
-    public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IEndDragHandler, IDropHandler, IDragHandler
+    public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
+        IBeginDragHandler, IEndDragHandler, IDropHandler, IDragHandler,
+        IPointerClickHandler
     {
         // Container for ItemImage & amountText for drag&drop
         [SerializeField] private RectTransform slotContainer;
@@ -22,7 +24,9 @@ namespace UI.Inventory
         private Color _initBgColor;
         
         private Vector3 _initDragPos;
-        
+
+        public bool HasItem => _hasItem;
+
         private void Awake()
         {
             itemBackgroundImage = GetComponent<Image>();
@@ -46,7 +50,7 @@ namespace UI.Inventory
             UpdateInfo(icon, amount);
         }
         
-        public void SetData(InventoryStuck stuck)
+        public void SetData(ItemStuck stuck)
         {
             if (stuck != null) 
             {
@@ -108,19 +112,21 @@ namespace UI.Inventory
         
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (!_hasItem) return;
+            if (!_hasItem || eventData.button != PointerEventData.InputButton.Left) return;
             InventoryUI.inventoryManager.draggingSlot = this; 
             slotContainer.SetParent(transform.parent);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (!_hasItem) return;
+            if (!_hasItem || eventData.button != PointerEventData.InputButton.Left) return;
             ResetSlot();
         }
 
-        public void OnDrop(PointerEventData eventData)
+        public virtual void OnDrop(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left) return;
+                
             var draggingSlot = InventoryUI.inventoryManager.draggingSlot;
             ResetSlot();
             if (!draggingSlot) return;
@@ -148,8 +154,18 @@ namespace UI.Inventory
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (!_hasItem) return;
+            if (!_hasItem || eventData.button != PointerEventData.InputButton.Left) return;
             slotContainer.position = eventData.position;
+        }
+
+        // Use item (Right Click)
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button != PointerEventData.InputButton.Right || !_hasItem) return;
+            InventoryUI.inventoryManager.UseItem(
+                InventoryUI.OpenedInventory.items[SlotIndex], 
+                SlotIndex,
+                InventoryUI.OpenedInventory);
         }
     }
 }
