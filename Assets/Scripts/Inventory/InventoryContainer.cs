@@ -26,7 +26,7 @@ namespace Inventory
         [SerializeField] private bool isAlwaysActive;
 
         public int itemsCount = 17;
-        public ItemStuck[] items; // TODO: make readonly!!!
+        public ItemStuck[] items;
         public const uint StackSize = 256;
     
         public delegate void OnItemChange(ItemStuck item, int slotIndex);
@@ -60,36 +60,32 @@ namespace Inventory
             }
         }
         
-        private void HandlePlayerInvOpen(PlayerGameState state)
+        private void HandlePlayerInvOpen(PlayerGameState state, PlayerGameState prevState)
         {
-            if (state != PlayerGameState.Inventory) return;
-            inventoryUI.OpenInventory(this);
+            if (state == PlayerGameState.Inventory)
+            {
+                inventoryUI.OpenInventory(this);    
+            } else if (prevState == PlayerGameState.Inventory)
+            {
+                inventoryUI.CloseInventory();
+            }
         }
 
-        public ItemStuck AddItem(ItemStuck itemStuck)
+        /// <returns>ItemStuck returns if not enough space in inventory container for this items</returns>
+        public ItemStuck AddItem(ItemStuck stuck)
         {
-            return AddItem(itemStuck.item, itemStuck.amount);
-        }
-        
-        public ItemStuck AddItem(BaseItem item, int amount)
-        {
-            var stuck = new ItemStuck
-            {
-                item = item,
-                amount = amount
-            };
             if (items.Length >= StackSize) return stuck;
 
-            if (item.IsStackable)
+            if (stuck.item.IsStackable)
             {
                 for (var i = 0; i < items.Length; i++)
                 {
                     if (items[i].IsEmpty || 
-                        items[i].item.ItemName != item.ItemName || 
+                        items[i].item.ItemName != stuck.item.ItemName || 
                         items[i].amount >= StackSize
                         ) continue;
                     
-                    items[i].amount += amount; // TODO: handle to add multi items by stuck
+                    items[i].amount += stuck.amount; // TODO: handle to add multi items by stuck
                     ItemChangeEvent?.Invoke(items[i], i);
                     return null;
                 }
@@ -98,8 +94,8 @@ namespace Inventory
             for (var i = 0; i < items.Length; i++)
             {
                 if (!items[i].IsEmpty) continue;
-                items[i].item = item;
-                items[i].amount = amount; // TODO: handle to add multi items by stuck
+                items[i].item = stuck.item;
+                items[i].amount = stuck.amount; // TODO: handle to add multi items by stuck
                 ItemChangeEvent?.Invoke(items[i], i);
                 return null; 
             }
@@ -116,7 +112,6 @@ namespace Inventory
         
         public void MoveItemToContainer(InventoryContainer container, int slotIndex)
         {
-            Debug.Log($"Moving item from {invName} to {container.invName} | item {slotIndex}");
             if (container.AddItem(items[slotIndex]) is null)
             {
                 RemoveItem(slotIndex);

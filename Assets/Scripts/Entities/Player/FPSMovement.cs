@@ -61,10 +61,10 @@ namespace Player
             _rotation = new Vector2(5, 0); // todo: not works
 
             _gameManager.PlayerGameStateChangedEvent += GameStateChanged;
-            GameStateChanged(_gameManager.PlayerGameState);
+            GameStateChanged(_gameManager.PlayerGameState, PlayerGameState.Menu);
         }
 
-        private void GameStateChanged(PlayerGameState state)
+        private void GameStateChanged(PlayerGameState state, PlayerGameState prevState)
         {
             var isPlaying = state == PlayerGameState.Playing;
             SwitchCursorLock(isPlaying);

@@ -9,11 +9,8 @@ namespace UI.Inventory
     {
         [Header("Equipment Properties")] 
         [SerializeField] private EquipmentType slotType;
-        
-        // TODO: Придумать че с этим сделать - Нужно изменять параметры
-        // [SerializeField] private EntityStats playerStats;
 
-        private Type _equipType = typeof(EquipmentItem);
+        private readonly Type _equipType = typeof(EquipmentItem);
         
         public override void OnDrop(PointerEventData eventData)
         {
@@ -22,6 +19,7 @@ namespace UI.Inventory
             
             ResetSlot();
             if (!draggingSlot.HasItem) return;
+            draggingSlot.ResetSlot();
             
             var dragItem = draggingSlot.InventoryUI.OpenedInventory.items[draggingSlot.SlotIndex].item;
             if (dragItem.GetType() != _equipType) return;
@@ -29,19 +27,18 @@ namespace UI.Inventory
             var item = (EquipmentItem)dragItem;
             var itemType = item.equipmentType;
 
-            Debug.Log("Item: " + item.name + " | Type: " + itemType);
-            
             if (!eventData.hovered[0].TryGetComponent(out EquipmentSlotUI dropSlot)) return;
             // Because doing nothing
             if (draggingSlot.InventoryUI.GetInstanceID() == dropSlot.InventoryUI.GetInstanceID()) return;
             
 
+            // TODO: move logic outside cuz we can equip two handed weapons
+            //-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+            
             // Equip weapon
             if (dropSlot.slotType == EquipmentType.OneHandedWeapon && 
                 itemType is EquipmentType.TwoHandedWeapon or EquipmentType.OneHandedWeapon)
             {
-                Debug.Log("Equipping to weapons slot");
-                // TODO: move logic outside cuz we can equip two handed weapons
                 draggingSlot.InventoryUI.OpenedInventory.SwapItemWithContainer(
                     dropSlot.InventoryUI.OpenedInventory, 
                     draggingSlot.SlotIndex,
@@ -54,6 +51,7 @@ namespace UI.Inventory
                 dropSlot.InventoryUI.OpenedInventory, 
                 draggingSlot.SlotIndex,
                 dropSlot.SlotIndex);
+            //==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
             
         }
     }

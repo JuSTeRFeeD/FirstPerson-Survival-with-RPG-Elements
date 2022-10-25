@@ -16,10 +16,10 @@ namespace Managers
         {
             _gameManager = GameManager.Instance;
             _gameManager.PlayerGameStateChangedEvent += GameStateChanged;
-            GameStateChanged(_gameManager.PlayerGameState);
+            GameStateChanged(_gameManager.PlayerGameState, PlayerGameState.Menu);
         }
 
-        private void GameStateChanged(PlayerGameState state)
+        private void GameStateChanged(PlayerGameState state, PlayerGameState prevState)
         {
             menu.SetActive(state == PlayerGameState.Menu);
             inventory.SetActive(state == PlayerGameState.Inventory);

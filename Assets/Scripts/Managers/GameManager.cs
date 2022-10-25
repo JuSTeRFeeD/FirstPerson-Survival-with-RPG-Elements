@@ -15,7 +15,7 @@ namespace Managers
                 GameControls = new GameControls();
                 GameControls.Enable();
                 GameControls.PlayerControls.Enable();
-                
+                transform.SetParent(null);
                 DontDestroyOnLoad(gameObject);
                 return;
             }
@@ -51,13 +51,13 @@ namespace Managers
 
         public PlayerGameState PlayerGameState { get; private set; }  = PlayerGameState.Playing;
 
-        public delegate void OnPlayerGameStateChanged(PlayerGameState state);
+        public delegate void OnPlayerGameStateChanged(PlayerGameState state, PlayerGameState pervState);
         public OnPlayerGameStateChanged PlayerGameStateChangedEvent;
 
         public void SetGameState(PlayerGameState state)
         {
+            PlayerGameStateChangedEvent?.Invoke(state, PlayerGameState);
             PlayerGameState = state;
-            PlayerGameStateChangedEvent?.Invoke(state);
         }
 
     }

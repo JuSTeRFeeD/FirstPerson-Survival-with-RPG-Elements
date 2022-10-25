@@ -21,9 +21,7 @@ namespace UI.Inventory
         [Header("Tooltip settings")]
         [SerializeField] private TextMeshProUGUI itemTitle;
         [SerializeField] private TextMeshProUGUI itemDescription;
-
-        private PlayerGameState _prevGameState;
-
+        
         private void Start()
         {
 #if UNITY_EDITOR
@@ -32,7 +30,6 @@ namespace UI.Inventory
             NullRefCheck.CheckNullable(toolbarContainer);
 #endif
             
-            _prevGameState = GameManager.Instance.PlayerGameState;
             GameManager.Instance.PlayerGameStateChangedEvent += HandleChangeGameState;
 
             ShowItemTooltip(null);
@@ -60,15 +57,12 @@ namespace UI.Inventory
             }
         }
 
-        private void HandleChangeGameState(PlayerGameState state)
+        private void HandleChangeGameState(PlayerGameState state, PlayerGameState prevState)
         {
-            if (draggingSlot != null &&
-                _prevGameState == PlayerGameState.Inventory &&
-                state != PlayerGameState.Inventory)
-            {
-                draggingSlot.ResetSlot();
-            }
-            _prevGameState = state;
+            if (draggingSlot == null ||
+                prevState != PlayerGameState.Inventory ||
+                state == PlayerGameState.Inventory) return;
+            draggingSlot.ResetSlot();
         }
 
         public void UseItem(ItemStuck stuck, int slotIndex, InventoryContainer fromContainer)
@@ -79,14 +73,13 @@ namespace UI.Inventory
             // Trying Remove item from Equipment to Inventory
             if (fromContainer.GetInstanceID() == equipmentContainer.GetInstanceID())
             {
-                // equipmentContainer.MoveItemToContainer(inventoryContainer, slotIndex);
-                inventoryContainer.AddItem(stuck);
+                equipmentContainer.MoveItemToContainer(inventoryContainer, slotIndex);
             }
             
-            // if (fromContainer.GetInstanceID() == toolbarContainer.GetInstanceID())
-            // {
+            if (fromContainer.GetInstanceID() == toolbarContainer.GetInstanceID())
+            {
                 
-            // }
+            }
         }
     }
 }

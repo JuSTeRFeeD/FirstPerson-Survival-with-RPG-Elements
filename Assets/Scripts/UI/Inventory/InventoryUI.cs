@@ -32,8 +32,6 @@ namespace UI.Inventory
         public void OpenInventory(InventoryContainer container)
         {
             OpenedInventory = container;
-            
-            // TODO: нужна отписка где-то
             OpenedInventory.ItemChangeEvent += HandleItemChange;
             
             var items = container.items;
@@ -43,9 +41,14 @@ namespace UI.Inventory
             }
         }
 
+        public void CloseInventory()
+        {
+            if (OpenedInventory == null) return;
+            OpenedInventory.ItemChangeEvent -= HandleItemChange;
+        }
+
         private void HandleItemChange(ItemStuck stuck, int slotIndex)
         {
-            Debug.Log($"Item Change {slotIndex} at {OpenedInventory.invName}");
             _cells[slotIndex].SetData(stuck);
         }
         
