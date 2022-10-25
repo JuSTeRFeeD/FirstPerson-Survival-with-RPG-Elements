@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player
+namespace Entities.Player
 {
     public class Energy : MonoBehaviour
     {
@@ -15,6 +15,11 @@ namespace Player
 
         public float CurrentValue => currentValue;
         public float MaxValue => maxValue;
+
+        public float PercentOfEnergy => MaxValue == 0 ? 0 : currentValue / MaxValue;
+
+        public delegate void OnEnergyChanged();
+        public OnEnergyChanged EnergyChangedEvent;
         
         private void FixedUpdate()
         {
@@ -28,6 +33,7 @@ namespace Player
             if (currentValue >= maxValue) return;
             currentValue += resetAmountPerSec * dt;
             if (currentValue > maxValue) currentValue = maxValue;
+            EnergyChangedEvent?.Invoke();
         }
 
         public bool UseStaminaAmount(float toUseAmount)
@@ -35,6 +41,7 @@ namespace Player
             if (currentValue <= toUseAmount) return false;
             currentValue -= toUseAmount;
             _currentDelay = delayBeforeResets;
+            EnergyChangedEvent?.Invoke();
             return true;
         }
     }
