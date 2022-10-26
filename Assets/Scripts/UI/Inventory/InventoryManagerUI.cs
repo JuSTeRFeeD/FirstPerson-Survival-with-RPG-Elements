@@ -1,8 +1,8 @@
 using System.Text;
+using Entities.Player;
 using Inventory;
 using Items;
 using Managers;
-using Player;
 using TMPro;
 using UnityEngine;
 using Utils;

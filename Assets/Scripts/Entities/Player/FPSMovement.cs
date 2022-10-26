@@ -1,9 +1,8 @@
-using Entities.Player;
 using Managers;
 using UnityEngine;
 using Utils;
 
-namespace Player
+namespace Entities.Player
 {
     [RequireComponent(typeof(CharacterController), typeof(Energy))]
     public class FPSMovement : MonoBehaviour
@@ -71,7 +70,6 @@ namespace Player
             SwitchCursorLock(isPlaying);
             _isActiveLookRotation = isPlaying;
             _isActiveMovement = state != PlayerGameState.Menu && state != PlayerGameState.SkillTree;
-            if (!_isActiveMovement) _inputDir = Vector2.zero;
         }
 
         private static void SwitchCursorLock(bool isLocked)
