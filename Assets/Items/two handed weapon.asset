@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: two handed weapon
   m_EditorClassIdentifier: 
   itemIcon: {fileID: 21300000, guid: 0430367301821d14d914201cdbb27c54, type: 3}
-  itemName: two handed weapon
+  itemName: "\u0414\u0443\u0431\u0438\u043D\u0430 \u0431\u043B\u044F\u0442\u044C"
   isStackable: 0
   isUnique: 0
-  prefab: {fileID: 0}
+  prefab: {fileID: 919132149155446097, guid: 82de5f4d2dff6424ba8f609062c5a945, type: 3}
   equipmentType: 4
   stats:
-    physicalDamage: 123
-    magicDamage: 1
+    physicalDamage: 20
+    magicDamage: 0
     clearDamage: 0
     physicalDefence: 0
     magicDefence: 0
     health: 0
     healthRegeneration: 0
-    moveSpeed: 0
+    moveSpeed: -5

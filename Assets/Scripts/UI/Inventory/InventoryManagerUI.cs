@@ -2,6 +2,7 @@ using System.Text;
 using Inventory;
 using Items;
 using Managers;
+using Player;
 using TMPro;
 using UnityEngine;
 using Utils;
@@ -14,9 +15,9 @@ namespace UI.Inventory
         public InventorySlotUI draggingSlot;
 
         [Tooltip("Mine Player Containers")] 
-        [SerializeField] private InventoryContainer equipmentContainer;
-        [SerializeField] private InventoryContainer inventoryContainer;
-        [SerializeField] private InventoryContainer toolbarContainer;
+        [SerializeField] private FPSMovement player;
+        private InventoryContainer _playerInventoryContainer;
+        private Equipment _equipment;
         
         [Header("Tooltip settings")]
         [SerializeField] private TextMeshProUGUI itemTitle;
@@ -25,10 +26,10 @@ namespace UI.Inventory
         private void Start()
         {
 #if UNITY_EDITOR
-            NullRefCheck.CheckNullable(equipmentContainer);
-            NullRefCheck.CheckNullable(inventoryContainer);
-            NullRefCheck.CheckNullable(toolbarContainer);
+            NullRefCheck.CheckNullable(player);
 #endif
+            _playerInventoryContainer = player.GetComponent<InventoryContainer>();
+            _equipment = player.GetComponent<Equipment>();
             
             GameManager.Instance.PlayerGameStateChangedEvent += HandleChangeGameState;
 
@@ -39,8 +40,7 @@ namespace UI.Inventory
         {
             if (stuck is null || stuck.IsEmpty)
             {
-                itemTitle.text = string.Empty;
-                itemDescription.text = string.Empty;
+                HideItemTooltip();
                 return;
             }
             
@@ -50,11 +50,18 @@ namespace UI.Inventory
             
             itemTitle.text = sb.ToString();
             
-            
             if (stuck.item.GetType() == typeof(EquipmentItem))
             {
-                itemDescription.text = ((EquipmentItem)stuck.item).stats.GetFormattedStats();
+                var equipItem = (EquipmentItem)stuck.item;
+                var itemType = $"<color=grey>[{equipItem.equipmentType.ToString()}]\n\n<color=white>"; 
+                itemDescription.text = itemType + equipItem.stats.GetFormattedStats();
             }
+        }
+
+        public void HideItemTooltip()
+        {
+            itemTitle.text = string.Empty;
+            itemDescription.text = string.Empty;
         }
 
         private void HandleChangeGameState(PlayerGameState state, PlayerGameState prevState)
@@ -62,23 +69,14 @@ namespace UI.Inventory
             if (draggingSlot == null ||
                 prevState != PlayerGameState.Inventory ||
                 state == PlayerGameState.Inventory) return;
-            draggingSlot.ResetSlot();
+            draggingSlot.ResetSlotDrag();
         }
 
         public void UseItem(ItemStuck stuck, int slotIndex, InventoryContainer fromContainer)
         {
-            // todo: equip or use items
-
-            
-            // Trying Remove item from Equipment to Inventory
-            if (fromContainer.GetInstanceID() == equipmentContainer.GetInstanceID())
+            if (stuck.item.GetType() == typeof(EquipmentItem))
             {
-                equipmentContainer.MoveItemToContainer(inventoryContainer, slotIndex);
-            }
-            
-            if (fromContainer.GetInstanceID() == toolbarContainer.GetInstanceID())
-            {
-                
+                _equipment.EquipItem(slotIndex, fromContainer);
             }
         }
     }

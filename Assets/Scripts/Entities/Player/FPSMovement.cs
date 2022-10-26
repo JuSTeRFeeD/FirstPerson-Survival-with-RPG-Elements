@@ -71,6 +71,7 @@ namespace Player
             SwitchCursorLock(isPlaying);
             _isActiveLookRotation = isPlaying;
             _isActiveMovement = state != PlayerGameState.Menu && state != PlayerGameState.SkillTree;
+            if (!_isActiveMovement) _inputDir = Vector2.zero;
         }
 
         private static void SwitchCursorLock(bool isLocked)

@@ -2,7 +2,7 @@ namespace Entities
 {
     public class Leveling
     {
-        public int Level { get; private set; } = 1;
+        public int Level { get; private set; } = 0;
 
         public int TargetExperience = 10;
         public int CurrentExperience { get; private set; } = 0;
@@ -33,9 +33,15 @@ namespace Entities
             {
                 CurrentExperience -= TargetExperience;
                 Level++;
-                if (_levelExperiences.Length > Level) TargetExperience = _levelExperiences[Level];
-                else TargetExperience = (int)(TargetExperience * 0.15f);
                 LevelUpEvent?.Invoke();
+                if (_levelExperiences.Length > Level) TargetExperience = _levelExperiences[Level];
+                else
+                { 
+                    // TODO: calc for infinity leveling
+                    CurrentExperience = 0;
+                    TargetExperience = 1;
+                    break;
+                }
             }
             ExperienceChangedEvent?.Invoke(exp);
         }

@@ -18,7 +18,7 @@ namespace UI
 
         private void Start()
         {
-            _playerData = GameManager.PlayerData;
+            _playerData = GameManager.Instance.PlayerData;
             var lvl = _playerData.Leveling;
             levelText.text = lvl.Level.ToString();
             experienceText.text = $"{lvl.CurrentExperience} / {lvl.TargetExperience}";

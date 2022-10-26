@@ -1,4 +1,5 @@
 using Inventory;
+using Items;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,36 +11,39 @@ namespace UI.Inventory
         IBeginDragHandler, IEndDragHandler, IDropHandler, IDragHandler,
         IPointerClickHandler
     {
-        private const PointerEventData.InputButton MouseBtnLeft = PointerEventData.InputButton.Left;
-        private const PointerEventData.InputButton MouseBtnRight = PointerEventData.InputButton.Right;
-        private const PointerEventData.InputButton MouseBtnMiddle = PointerEventData.InputButton.Middle;
-
-        private static readonly Color HoverColor = Color.grey;
-
         // Container for ItemImage & amountText for drag&drop
         [SerializeField] private RectTransform slotContainer;
-        
         [SerializeField] private Image itemBackgroundImage;
         [SerializeField] private Image itemImage;
         [SerializeField] private TextMeshProUGUI amountText;
+        
+        private const PointerEventData.InputButton MouseBtnLeft = PointerEventData.InputButton.Left;
+        private const PointerEventData.InputButton MouseBtnRight = PointerEventData.InputButton.Right;
+        private const PointerEventData.InputButton MouseBtnMiddle = PointerEventData.InputButton.Middle;
+        private static readonly Color HoverColor = Color.grey;
 
-        public InventoryUI InventoryUI { get; private set; }
-        public int SlotIndex { get; private set; }
+        private InventoryManagerUI _inventoryManager; 
+        public IInventoryUI InventoryUI { get; private set; }
+    
+        public int SlotIndex { get; protected  set; }
         public bool HasItem { get; private set; }
         private Color _initBgColor;
         private Transform _dragParent;
 
+        public delegate void OnMouseEnter(InventorySlotUI slot);
+        public OnMouseEnter MouseEnterEvent;
+        public delegate void OnMouseExit(InventorySlotUI slot);
+        public OnMouseExit MouseExitEvent;
+        public delegate void OnItemUse(InventorySlotUI slot);
+        public OnItemUse ItemUseEvent;
+        public delegate void OnItemDropToSlot(InventorySlotUI slot);
+        public OnItemDropToSlot ItemDropToSlotEvent;
+        
         private void Awake()
         {
             itemBackgroundImage = GetComponent<Image>();
             _initBgColor = itemBackgroundImage.color;
             _dragParent = transform.parent.parent.parent ? transform.parent.parent.parent : transform.parent;
-        }
-
-        public void Init(int index, InventoryUI inventoryUi)
-        {
-            InventoryUI = inventoryUi;
-            SlotIndex = index;
         }
 
         public void SetData(ItemStuck stuck)
@@ -56,6 +60,30 @@ namespace UI.Inventory
             {
                 UpdateInfo(null, 0);
             }
+        }        
+        
+        public void SetData(BaseItem item)
+        {
+            if (item != null) 
+            {
+                UpdateInfo(item.ItemIcon ,1);
+            }
+            else
+            {
+                UpdateInfo(null, 0);
+            }
+        }
+
+        public void ClearData()
+        {
+            UpdateInfo(null, 0);
+        }
+
+        public void Init(int slotIndex, InventoryManagerUI inventoryManager, IInventoryUI inventoryUI)
+        {
+            InventoryUI = inventoryUI;
+            _inventoryManager = inventoryManager;
+            SlotIndex = slotIndex;
         }
 
         private void UpdateInfo(Sprite icon, int amount)
@@ -82,26 +110,23 @@ namespace UI.Inventory
         
         public void OnPointerEnter(PointerEventData eventData)
         {
+            MouseEnterEvent?.Invoke(this);
             itemBackgroundImage.color = HoverColor;
-            if (!HasItem) return;
-            InventoryUI.inventoryManager.ShowItemTooltip(InventoryUI.OpenedInventory.items[SlotIndex]);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            MouseExitEvent?.Invoke(this);
             itemBackgroundImage.color = _initBgColor;
-            InventoryUI.inventoryManager.ShowItemTooltip(null);
         }
         private void OnDisable()
         {
-            InventoryUI.inventoryManager.ShowItemTooltip(null);
             itemBackgroundImage.color = _initBgColor;
         }
 
         // Drag&Drop items
-        public void ResetSlot()
+        public void ResetSlotDrag()
         {
-            InventoryUI.inventoryManager.draggingSlot = null;
             slotContainer.SetParent(transform);
             slotContainer.anchoredPosition3D = Vector3.zero;
         }
@@ -109,7 +134,7 @@ namespace UI.Inventory
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (!HasItem || eventData.button != MouseBtnLeft) return;
-            InventoryUI.inventoryManager.draggingSlot = this; 
+            _inventoryManager.draggingSlot = this; 
             slotContainer.SetParent(_dragParent);
             slotContainer.position = eventData.position;
         }
@@ -123,37 +148,14 @@ namespace UI.Inventory
         public void OnEndDrag(PointerEventData eventData)
         {
             if (!HasItem || eventData.button != MouseBtnLeft) return;
-            ResetSlot();
+            ResetSlotDrag();
         }
 
-        public virtual void OnDrop(PointerEventData eventData)
+        public void OnDrop(PointerEventData eventData)
         {
             if (eventData.button != MouseBtnLeft) return;
-                
-            var draggingSlot = InventoryUI.inventoryManager.draggingSlot;
-            ResetSlot();
-            if (!draggingSlot) return;
-            draggingSlot.ResetSlot();
-
-            var draggingInventoryUI = draggingSlot.InventoryUI;
-
-            // Same Inventory Container
-            if (draggingInventoryUI.GetInstanceID() == InventoryUI.GetInstanceID())
-            {
-                if (draggingSlot.SlotIndex == SlotIndex) return;
-                
-                draggingInventoryUI.OpenedInventory.SwapItems(
-                    draggingSlot.SlotIndex,
-                    SlotIndex);
-                return;
-            }
-            
-            // Other Inventory Container
-            // todo:  MoveItemToContainer юзать при клике шифт поди надо! ТУТ ИСПОЛЬЗОВАТЬ ДРУГОЕ НИД-====-=-=-=-=-=
-            draggingInventoryUI.OpenedInventory.SwapItemWithContainer(
-                InventoryUI.OpenedInventory, 
-                draggingSlot.SlotIndex,
-                SlotIndex);
+            ItemDropToSlotEvent?.Invoke(this);
+            ResetSlotDrag();
         }
 
 
@@ -161,11 +163,7 @@ namespace UI.Inventory
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.button != MouseBtnRight || !HasItem) return;
-            var openedInv = InventoryUI.OpenedInventory;
-            InventoryUI.inventoryManager.UseItem(
-                openedInv.items[SlotIndex], 
-                SlotIndex,
-                openedInv);
+            ItemUseEvent?.Invoke(this);
         }
         
         #endregion

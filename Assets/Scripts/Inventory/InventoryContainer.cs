@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Items;
 using Managers;
@@ -7,12 +8,9 @@ using Utils;
 
 namespace Inventory
 {
-    public class InventoryContainer : MonoBehaviour
+    public class InventoryContainer : MonoBehaviour, IInventoryContainer
     {
         public List<ItemStuck> test = new List<ItemStuck>();
-        [Header("Name *using only for identify")]
-        // DONT USE IN CODE
-        public string invName = "";
         
         [Header("Properties")]
         
@@ -21,13 +19,10 @@ namespace Inventory
         
         [Tooltip("Загружается при открытии меню")]
         [SerializeField] private bool isMineOpeningInventory;
-        
-        [Tooltip("Подгружен изначально, перекрывает isMineOpeningInventory")]
-        [SerializeField] private bool isAlwaysActive;
 
-        public int itemsCount = 17;
+        [SerializeField] private int itemsCount = 18;
         public ItemStuck[] items;
-        public const uint StackSize = 256;
+        private const uint StackSize = 100;
     
         public delegate void OnItemChange(ItemStuck item, int slotIndex);
         public OnItemChange ItemChangeEvent;
@@ -44,19 +39,13 @@ namespace Inventory
                 items[i] = new ItemStuck();
             }
 
-            if (isAlwaysActive)
-            {
-                inventoryUI.OpenInventory(this);
-            }
-            else if (isMineOpeningInventory)
-            {
-                GameManager.Instance.PlayerGameStateChangedEvent += HandlePlayerInvOpen;
+            if (!isMineOpeningInventory) return;
+            GameManager.Instance.PlayerGameStateChangedEvent += HandlePlayerInvOpen;
                 
-                // todo: del! for tests
-                foreach (var t in test)
-                {
-                    AddItem(t);
-                }
+            // todo: del! for tests
+            foreach (var t in test)
+            {
+                AddItem(t);
             }
         }
         
@@ -69,6 +58,15 @@ namespace Inventory
             {
                 inventoryUI.CloseInventory();
             }
+        }
+
+        public ItemStuck GetItemByIndex(int slotIndex)
+        {
+            if (slotIndex < 0 || slotIndex > items.Length)
+            {
+                throw new Exception("Out of bounds inv size");
+            }
+            return items[slotIndex];
         }
 
         /// <returns>ItemStuck returns if not enough space in inventory container for this items</returns>
@@ -102,37 +100,13 @@ namespace Inventory
             
             return stuck;
         }
-
-        public void SwapItems(int indexFirst, int indexSecond)
-        {
-            (items[indexFirst], items[indexSecond]) = (items[indexSecond], items[indexFirst]);
-            ItemChangeEvent?.Invoke(items[indexFirst], indexFirst);
-            ItemChangeEvent?.Invoke(items[indexSecond], indexSecond);
-        }
         
-        public void MoveItemToContainer(InventoryContainer container, int slotIndex)
-        {
-            if (container.AddItem(items[slotIndex]) is null)
-            {
-                RemoveItem(slotIndex);
-            }
-        }
-
-        /// <summary>
-        /// Swap item between two inventory containers
-        /// </summary>
-        /// <param name="container">Other container</param>
-        /// <param name="slotIndex">Current container item slot index</param>
-        /// <param name="dropSlotIndex">Other container item slot index</param>
-        public void SwapItemWithContainer(InventoryContainer container, int slotIndex, int dropSlotIndex)
-        {
-            (container.items[dropSlotIndex], items[slotIndex]) = (items[slotIndex], container.items[dropSlotIndex]);
-            ItemChangeEvent?.Invoke(items[slotIndex], slotIndex);
-            container.ItemChangeEvent?.Invoke(container.items[dropSlotIndex], dropSlotIndex);
-        }
-
         public ItemStuck RemoveItem(int slotIndex)
         {
+            if (slotIndex < 0 || slotIndex > items.Length)
+            {
+                throw new Exception("Out of bounds inv size");
+            }
             var stuck = new ItemStuck
             {
                 item = items[slotIndex].item,
@@ -142,10 +116,38 @@ namespace Inventory
             ItemChangeEvent?.Invoke(null, slotIndex);
             return stuck;
         }
-    
-        public void DropItemToWorld(BaseItem item)
+
+        public void SwapItems(int indexFirst, int indexSecond)
         {
-        
+            (items[indexFirst], items[indexSecond]) = (items[indexSecond], items[indexFirst]);
+            ItemChangeEvent?.Invoke(items[indexFirst], indexFirst);
+            ItemChangeEvent?.Invoke(items[indexSecond], indexSecond);
         }
+        
+        // public void MoveItemToContainer(InventoryContainer container, int slotIndex)
+        // {
+            // if (container.AddItem(items[slotIndex]) is null)
+            // {
+                // RemoveItem(slotIndex);
+            // }
+        // }
+
+        // /// <summary>
+        // /// Swap item between two inventory containers
+        // /// </summary>
+        // /// <param name="container">Other container</param>
+        // /// <param name="slotIndex">Current container item slot index</param>
+        // /// <param name="dropSlotIndex">Other container item slot index</param>
+        // public void SwapItemWithContainer(InventoryContainer container, int slotIndex, int dropSlotIndex)
+        // {
+        //     (container.items[dropSlotIndex], items[slotIndex]) = (items[slotIndex], container.items[dropSlotIndex]);
+        //     ItemChangeEvent?.Invoke(items[slotIndex], slotIndex);
+        //     container.ItemChangeEvent?.Invoke(container.items[dropSlotIndex], dropSlotIndex);
+        // }
+
+        // public void DropItemToWorld(BaseItem item)
+        // {
+        
+        // }
     }
 }

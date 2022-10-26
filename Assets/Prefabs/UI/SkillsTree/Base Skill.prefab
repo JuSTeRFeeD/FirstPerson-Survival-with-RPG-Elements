@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4262446287436681589}
   - component: {fileID: 4262446287436681586}
+  - component: {fileID: 4262446287436681585}
   - component: {fileID: 4262446287436681587}
   - component: {fileID: 4262446287436681588}
-  - component: {fileID: 4262446287436681585}
   m_Layer: 5
   m_Name: Base Skill
   m_TagString: Untagged
@@ -49,6 +49,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4262446287436681590}
   m_CullTransparentMesh: 1
+--- !u!114 &4262446287436681585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4262446287436681590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b8600fab22e42748a019d5ec9e0713a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillsTree: {fileID: 0}
+  isOpened: 0
+  skillToOpenThis: {fileID: 0}
+  openedSkillLine: {fileID: 0}
+  skillIcon: {fileID: 4262446288530953491}
+  title: 
+  description: 
 --- !u!114 &4262446287436681587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,21 +111,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &4262446287436681585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4262446287436681590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b8600fab22e42748a019d5ec9e0713a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isOpened: 0
-  skillToOpenThis: {fileID: 0}
-  openedSkillLine: {fileID: 0}
 --- !u!1 &4262446288530953493
 GameObject:
   m_ObjectHideFlags: 0

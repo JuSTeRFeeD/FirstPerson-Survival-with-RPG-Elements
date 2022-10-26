@@ -80,6 +80,15 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMouseHold"",
+                    ""type"": ""Button"",
+                    ""id"": ""9db7b1bf-d231-4dc3-bd0e-edc3353aa5b9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -190,6 +199,17 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c62e882-a9fa-4b16-af6a-4ab5eaeda107"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftMouseHold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -322,6 +342,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_PlayerControls_LeftMouse = m_PlayerControls.FindAction("LeftMouse", throwIfNotFound: true);
         m_PlayerControls_RightMouse = m_PlayerControls.FindAction("RightMouse", throwIfNotFound: true);
         m_PlayerControls_Interact = m_PlayerControls.FindAction("Interact", throwIfNotFound: true);
+        m_PlayerControls_LeftMouseHold = m_PlayerControls.FindAction("LeftMouseHold", throwIfNotFound: true);
         // Camera Controls
         m_CameraControls = asset.FindActionMap("Camera Controls", throwIfNotFound: true);
         m_CameraControls_Look = m_CameraControls.FindAction("Look", throwIfNotFound: true);
@@ -396,6 +417,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerControls_LeftMouse;
     private readonly InputAction m_PlayerControls_RightMouse;
     private readonly InputAction m_PlayerControls_Interact;
+    private readonly InputAction m_PlayerControls_LeftMouseHold;
     public struct PlayerControlsActions
     {
         private @GameControls m_Wrapper;
@@ -406,6 +428,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         public InputAction @LeftMouse => m_Wrapper.m_PlayerControls_LeftMouse;
         public InputAction @RightMouse => m_Wrapper.m_PlayerControls_RightMouse;
         public InputAction @Interact => m_Wrapper.m_PlayerControls_Interact;
+        public InputAction @LeftMouseHold => m_Wrapper.m_PlayerControls_LeftMouseHold;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -433,6 +456,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnInteract;
+                @LeftMouseHold.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnLeftMouseHold;
+                @LeftMouseHold.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnLeftMouseHold;
+                @LeftMouseHold.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnLeftMouseHold;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -455,6 +481,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @LeftMouseHold.started += instance.OnLeftMouseHold;
+                @LeftMouseHold.performed += instance.OnLeftMouseHold;
+                @LeftMouseHold.canceled += instance.OnLeftMouseHold;
             }
         }
     }
@@ -557,6 +586,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         void OnLeftMouse(InputAction.CallbackContext context);
         void OnRightMouse(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnLeftMouseHold(InputAction.CallbackContext context);
     }
     public interface ICameraControlsActions
     {

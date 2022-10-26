@@ -9,7 +9,7 @@ namespace Managers
         public static GameControls GameControls { get; private set; }
         public static GameManager Instance { get; private set; }
 
-        public static PlayerData PlayerData { get; private set; }
+        public PlayerData PlayerData { get; private set; }
 
         // TODO [!!!]: for tests 
         public int testAddingExp = 3;
