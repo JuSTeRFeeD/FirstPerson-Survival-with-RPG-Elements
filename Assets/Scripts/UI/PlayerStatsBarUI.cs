@@ -10,7 +10,7 @@ namespace UI
     {
         private PlayerData _playerData;
         [SerializeField] private TextMeshProUGUI levelText;
-        [SerializeField] private TextMeshProUGUI experienceText;
+        // [SerializeField] private TextMeshProUGUI experienceText;
         [SerializeField] private Image experienceProgressBar;
         [Space]
         [SerializeField] private Energy energy;
@@ -21,7 +21,7 @@ namespace UI
             _playerData = GameManager.Instance.PlayerData;
             var lvl = _playerData.Leveling;
             levelText.text = lvl.Level.ToString();
-            experienceText.text = $"{lvl.CurrentExperience} / {lvl.TargetExperience}";
+            // experienceText.text = $"{lvl.CurrentExperience} / {lvl.TargetExperience}";
             experienceProgressBar.fillAmount = lvl.ExperienceProgress;
             
             energy.EnergyChangedEvent += HandleEnergyChanged;
@@ -49,7 +49,7 @@ namespace UI
         private void HandleExperienceChanged(int expAmount)
         {
             var lvl = _playerData.Leveling;
-            experienceText.text = $"{lvl.CurrentExperience} / {lvl.TargetExperience}";
+            // experienceText.text = $"{lvl.CurrentExperience} / {lvl.TargetExperience}";
             experienceProgressBar.fillAmount = lvl.ExperienceProgress;
         }
     }

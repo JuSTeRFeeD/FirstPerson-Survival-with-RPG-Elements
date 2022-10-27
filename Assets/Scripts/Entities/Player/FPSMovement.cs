@@ -70,8 +70,14 @@ namespace Entities.Player
             SwitchCursorLock(isPlaying);
             _isActiveLookRotation = isPlaying;
             _isActiveMovement = state != PlayerGameState.Menu && state != PlayerGameState.SkillTree;
+            
+            if (_isActiveMovement) return;
+            // Temporary fix ====================
+            _inputDir = Vector2.zero;
+            _velocity = Vector3.zero;
         }
 
+        // TODO: Move to Game Manager
         private static void SwitchCursorLock(bool isLocked)
         {
             Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
@@ -114,12 +120,7 @@ namespace Entities.Player
 
         private void HandleMovement()
         {
-            if (!_isActiveMovement)
-            {
-                _velocity.x = 0;
-                _velocity.y = 0; // TODO: Temporary. Need to decrease values!
-                return;
-            }
+            if (!_isActiveMovement) return;
             if (!_characterController.isGrounded) return;
 
             var speed = baseMovementSpeed;
