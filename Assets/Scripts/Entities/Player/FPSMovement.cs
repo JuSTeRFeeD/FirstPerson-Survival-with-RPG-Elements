@@ -13,11 +13,11 @@ namespace Entities.Player
             
         [SerializeField] private Transform head;
         [Header("Movement")]
-        [SerializeField] private float baseMovementSpeed = 5f;
+        private float _movementSpeed = 5f;
         [SerializeField] private float jumpEnergyCost = 10f;
         [SerializeField] private float jumpHeight = 1f;
         [Header("Sprint")]
-        [SerializeField] private float baseSprintSpeed = 6.5f;
+        private float _sprintSpeed = 6.5f;
         [SerializeField] private float sprintEnergyCostPerSec = 10f;
         [Header("Mouse")]
         [SerializeField] private float mouseSensitivity = 80f;
@@ -34,8 +34,10 @@ namespace Entities.Player
         private Vector2 _lookDelta;
         private Vector2 _rotation;
         
-        private const float Gravity = 9f;
+        private const float Gravity = 11f;
         private Vector3 _velocity;
+
+        private EntityStats _playerStats;
         
         
         private void Start()
@@ -62,6 +64,16 @@ namespace Entities.Player
 
             _gameManager.PlayerGameStateChangedEvent += GameStateChanged;
             GameStateChanged(_gameManager.PlayerGameState, PlayerGameState.Menu);
+
+            _playerStats = GameManager.Instance.PlayerData.Stats;
+            UpdateStats();
+            _playerStats.StatsChangeEvent += UpdateStats;
+        }
+
+        private void UpdateStats()
+        {
+            _movementSpeed = _playerStats.moveSpeed;
+            _sprintSpeed = _playerStats.moveSpeed * 1.3f;
         }
 
         private void GameStateChanged(PlayerGameState state, PlayerGameState prevState)
@@ -123,10 +135,10 @@ namespace Entities.Player
             if (!_isActiveMovement) return;
             if (!_characterController.isGrounded) return;
 
-            var speed = baseMovementSpeed;
+            var speed = _movementSpeed;
             if (_isSprinting && _energy.UseStaminaAmount(sprintEnergyCostPerSec * Time.deltaTime))
             {
-                speed = baseSprintSpeed;
+                speed = _sprintSpeed;
             }
             _velocity.x = _inputDir.x * speed;
             _velocity.z = _inputDir.y * speed;

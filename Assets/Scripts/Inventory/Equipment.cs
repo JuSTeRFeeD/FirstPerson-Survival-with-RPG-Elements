@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Entities;
 using Items;
+using Managers;
 using UI.Inventory;
 using UnityEngine;
 
@@ -15,8 +17,11 @@ namespace Inventory
         private readonly Type _equipType = typeof(EquipmentItem);
         private InventoryContainer _inventoryContainer;
 
+        private EntityStats _playerStats;
+        
         private void Start()
         {
+            _playerStats = GameManager.Instance.PlayerData.Stats;
             _inventoryContainer = GetComponent<InventoryContainer>();
             var i = 0;
             foreach (var item in initEquipSlots)
@@ -29,6 +34,11 @@ namespace Inventory
             }
         }
 
+        public EquipmentItem GetItemInSlot(EquipmentSlotType slotType)
+        {
+            return _equipSlots[slotType].EquipmentItem;
+        }
+
         public void EquipItem(int fromSlotIndex, InventoryContainer fromContainer)
         {
             var stuck = fromContainer.items[fromSlotIndex];
@@ -39,13 +49,11 @@ namespace Inventory
             
             switch (equipmentItem.equipmentType)
             {
+                // TODO: надевать на слот в котором слабее предмет по его хар-кам
                 case EquipmentType.TwoHandedWeapon:
-                    // TODO: надевать на слот в котором слабее предмет по его хар-кам
-                    EquipToSlot(EquipmentSlotType.RightHand, equipmentItem, fromContainer, fromSlotIndex);
-                    EquipToSlot(EquipmentSlotType.LeftHand, equipmentItem, fromContainer, fromSlotIndex, false);
+                    EquipToSlot(EquipmentSlotType.LeftHand, equipmentItem, fromContainer, fromSlotIndex);
                     return;
                 case EquipmentType.OneHandedWeapon:
-                    // TODO: надевать на слот в котором слабее предмет по его хар-кам
                     var isLeftEmpty = !_equipSlots[EquipmentSlotType.LeftHand].slot.HasItem;
                     var isRightEmpty = !_equipSlots[EquipmentSlotType.RightHand].slot.HasItem;
 
@@ -85,13 +93,76 @@ namespace Inventory
             }
         }
 
-        private void EquipToSlot(EquipmentSlotType type, EquipmentItem item,
-            IInventoryContainer fromContainer, int fromSlot, bool removeFromContainer = true)
+        private void IncreaseStats(EquipmentSlotType type, EquipmentItem item)
         {
-            var equipped = _equipSlots[type].Equip(item);
-            // Deleting equipped item from inventory container
-            if (removeFromContainer) fromContainer.RemoveItem(fromSlot);
-            if (!equipped.IsEmpty) fromContainer.AddItem(equipped);
+            if (item == null) return;
+            _playerStats.IncreaseStats(item.stats);
+        }
+        private void DecreaseStats(EquipmentSlotType type, EquipmentItem item)
+        {
+            if (item == null) return;
+            _playerStats.DecreaseStats(item.stats);
+        }
+
+        private void EquipToSlot(EquipmentSlotType type, EquipmentItem item,
+            IInventoryContainer fromContainer, int fromSlot)
+        {
+            var equipped = _equipSlots[type].EquipmentItem;
+
+            if (item.equipmentType == EquipmentType.TwoHandedWeapon)
+            {
+                var equippedRightHand = _equipSlots[EquipmentSlotType.RightHand].EquipmentItem;
+                if (equipped != null)
+                {
+                    if (fromContainer.AddItem(_equipSlots[EquipmentSlotType.LeftHand].Stuck) != null)
+                    {
+                        // Not enough space in inventory
+                        // TODO: just drop to world...  лучше конечно не давать надевать двуручку если не хватит места в инвентаре
+                    }
+                    _playerStats.DecreaseStats(equipped.stats);
+                }
+                if (equippedRightHand != null)
+                {
+                    if (fromContainer.AddItem(_equipSlots[EquipmentSlotType.RightHand].Stuck) != null)
+                    {
+                        // Not enough space in inventory
+                        // TODO: just drop to world...  лучше конечно не давать надевать двуручку если не хватит места в инвентаре
+                    }
+                    _playerStats.DecreaseStats(equippedRightHand.stats);
+                }
+                fromContainer.RemoveItem(fromSlot);
+                _equipSlots[EquipmentSlotType.LeftHand].Equip(item);
+                _equipSlots[EquipmentSlotType.RightHand].Equip(item);
+            }
+            else
+            {
+                if (equipped != null)
+                {
+                    if (fromContainer.AddItem(_equipSlots[type].Stuck) != null)
+                    {
+                        // Not enough space in inventory
+                        // TODO: just drop to world...  лучше конечно не давать надевать двуручку если не хватит места в инвентаре
+                    }
+                    _playerStats.DecreaseStats(equipped.stats);
+                }
+                _equipSlots[type].Equip(item);
+                fromContainer.RemoveItem(fromSlot);
+            }
+            _playerStats.IncreaseStats(item.stats);
+
+
+            // var equipped = _equipSlots[type].Equip(item);
+            // if (item.equipmentType == EquipmentType.TwoHandedWeapon)
+            // {
+            // var rightHandEquipped = _equipSlots[EquipmentSlotType.RightHand].Equip(item);
+            // _playerStats.DecreaseStats();
+            // }
+            // if (!equipped.IsEmpty) fromContainer.AddItem(equipped);
+            // if (isNewItem)
+            // {
+            // fromContainer.RemoveItem(fromSlot);
+            // _playerStats.IncreaseStats(item.stats);
+            // }
         }
 
         #region Inventory Slot UI Events
@@ -115,20 +186,23 @@ namespace Inventory
         public void HandleSlotUseItem(InventorySlotUI slot)
         {
             if (!slot.HasItem) return;
+            var equipped = initEquipSlots[slot.SlotIndex].EquipmentItem;
             var stuck = new ItemStuck
             {
-                item = initEquipSlots[slot.SlotIndex].EquipmentItem,
+                item = equipped,
                 amount = 1
             };
             // DeEquip two handed
             if (initEquipSlots[slot.SlotIndex].EquipmentItem.equipmentType == EquipmentType.TwoHandedWeapon)
             {
                 if (_inventoryContainer.AddItem(stuck) is not null) return;
+                _playerStats.DecreaseStats(equipped.stats);
                 _equipSlots[EquipmentSlotType.LeftHand].ClearSlot();
                 _equipSlots[EquipmentSlotType.RightHand].ClearSlot();
             }
             else if (_inventoryContainer.AddItem(stuck) is null)
             {
+                _playerStats.DecreaseStats(equipped.stats);
                 initEquipSlots[slot.SlotIndex].ClearSlot();
             }
         }
@@ -157,29 +231,6 @@ namespace Inventory
         public void SwapItems(int indexFirst, int indexSecond)
         {
             // TODO: swap weapon items
-        }
-    }
-    
-    [Serializable]
-    public class EquipSlot {
-        public EquipmentSlotType type;
-        public InventorySlotUI slot;
-        public EquipmentItem EquipmentItem { get; private set; }
-
-        public ItemStuck Stuck => new() { item = EquipmentItem, amount = 1 };
-        
-        public ItemStuck Equip(EquipmentItem item)
-        {
-            var equipped = Stuck;
-            EquipmentItem = item;
-            slot.SetData(item);
-            return equipped;
-        }
-
-        public void ClearSlot()
-        {
-            slot.ClearData();
-            EquipmentItem = null;
         }
     }
 }

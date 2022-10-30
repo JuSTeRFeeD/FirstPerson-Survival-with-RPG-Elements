@@ -19,8 +19,8 @@ MonoBehaviour:
   prefab: {fileID: 919132149155446097, guid: 82de5f4d2dff6424ba8f609062c5a945, type: 3}
   equipmentType: 5
   stats:
-    physicalDamage: 4
-    magicDamage: 1
+    physicalDamage: 5
+    magicDamage: 0
     clearDamage: 0
     physicalDefence: 0
     magicDefence: 0

@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28831712753cb094882e0db704f26f60, type: 3}
   m_Name: two handed weapon
   m_EditorClassIdentifier: 
-  itemIcon: {fileID: 21300000, guid: 0430367301821d14d914201cdbb27c54, type: 3}
+  itemIcon: {fileID: -1360998198, guid: 79087a23b15b6684dbaa5125189aee64, type: 3}
   itemName: "\u0414\u0443\u0431\u0438\u043D\u0430 \u0431\u043B\u044F\u0442\u044C"
   isStackable: 0
   isUnique: 0
   prefab: {fileID: 919132149155446097, guid: 82de5f4d2dff6424ba8f609062c5a945, type: 3}
   equipmentType: 4
   stats:
-    physicalDamage: 20
+    physicalDamage: 10
     magicDamage: 0
     clearDamage: 0
     physicalDefence: 0

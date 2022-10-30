@@ -22,7 +22,6 @@ namespace Managers
                 
                 GameControls = new GameControls();
                 GameControls.Enable();
-                GameControls.PlayerControls.Enable();
                 transform.SetParent(null);
                 DontDestroyOnLoad(gameObject);
                 return;

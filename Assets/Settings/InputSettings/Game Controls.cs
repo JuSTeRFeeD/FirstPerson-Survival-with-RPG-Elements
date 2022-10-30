@@ -55,24 +55,6 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""LeftMouse"",
-                    ""type"": ""Button"",
-                    ""id"": ""9dd5990e-756f-4ac8-9a9a-251e68340b23"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""RightMouse"",
-                    ""type"": ""Button"",
-                    ""id"": ""59ce0276-a2aa-46cb-abd9-86f0fb95350b"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""ef1c93c6-f9d6-4a7c-9d7b-bd0612f4164f"",
@@ -166,28 +148,6 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Sprint"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0f9f73a3-1b15-451c-9068-4c064ce73efb"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LeftMouse"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""a221d9f1-7d12-428a-942c-6235ee4ddd09"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RightMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -330,6 +290,134 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Combat"",
+            ""id"": ""b6baa639-682c-4c1b-a96c-e712fd8c75f1"",
+            ""actions"": [
+                {
+                    ""name"": ""FirstSkill"",
+                    ""type"": ""Button"",
+                    ""id"": ""e0781768-6235-4f1c-8394-55612e74309f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SecondSkill"",
+                    ""type"": ""Button"",
+                    ""id"": ""de3fea22-0b2d-4ed4-8d70-e98828eb2fdf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ThirdSkill"",
+                    ""type"": ""Button"",
+                    ""id"": ""840f1e1d-6598-416c-a410-459789c3aabb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UltimateSkill"",
+                    ""type"": ""Button"",
+                    ""id"": ""7c5e47dc-c35f-45de-b7b3-aa0e14d6eb13"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightMouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""b954df27-659e-4765-ba6b-7e868dcc3c9a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""1ad3522d-2962-4662-9248-e5f643ac386d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""97d7ef44-8e42-459c-a724-1a6dfd738537"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FirstSkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1254c80f-66bf-428e-b567-2bb1ef28afe7"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f58edf81-6ff7-48fb-b5e1-6c1bca4e5324"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""10aca93d-6860-46c9-90c3-d03b59fe6dc0"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SecondSkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""68c31c74-a440-4433-a6b9-4a326e73be8a"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ThirdSkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3009fc98-e131-4897-9d52-1eec76d540a4"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UltimateSkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -339,8 +427,6 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_PlayerControls_Movement = m_PlayerControls.FindAction("Movement", throwIfNotFound: true);
         m_PlayerControls_Jump = m_PlayerControls.FindAction("Jump", throwIfNotFound: true);
         m_PlayerControls_Sprint = m_PlayerControls.FindAction("Sprint", throwIfNotFound: true);
-        m_PlayerControls_LeftMouse = m_PlayerControls.FindAction("LeftMouse", throwIfNotFound: true);
-        m_PlayerControls_RightMouse = m_PlayerControls.FindAction("RightMouse", throwIfNotFound: true);
         m_PlayerControls_Interact = m_PlayerControls.FindAction("Interact", throwIfNotFound: true);
         m_PlayerControls_LeftMouseHold = m_PlayerControls.FindAction("LeftMouseHold", throwIfNotFound: true);
         // Camera Controls
@@ -352,6 +438,14 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_MenuControls_Escape = m_MenuControls.FindAction("Escape", throwIfNotFound: true);
         m_MenuControls_OpenInventory = m_MenuControls.FindAction("OpenInventory", throwIfNotFound: true);
         m_MenuControls_OpenSkillTree = m_MenuControls.FindAction("OpenSkillTree", throwIfNotFound: true);
+        // Combat
+        m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
+        m_Combat_FirstSkill = m_Combat.FindAction("FirstSkill", throwIfNotFound: true);
+        m_Combat_SecondSkill = m_Combat.FindAction("SecondSkill", throwIfNotFound: true);
+        m_Combat_ThirdSkill = m_Combat.FindAction("ThirdSkill", throwIfNotFound: true);
+        m_Combat_UltimateSkill = m_Combat.FindAction("UltimateSkill", throwIfNotFound: true);
+        m_Combat_RightMouse = m_Combat.FindAction("RightMouse", throwIfNotFound: true);
+        m_Combat_LeftMouse = m_Combat.FindAction("LeftMouse", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -414,8 +508,6 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerControls_Movement;
     private readonly InputAction m_PlayerControls_Jump;
     private readonly InputAction m_PlayerControls_Sprint;
-    private readonly InputAction m_PlayerControls_LeftMouse;
-    private readonly InputAction m_PlayerControls_RightMouse;
     private readonly InputAction m_PlayerControls_Interact;
     private readonly InputAction m_PlayerControls_LeftMouseHold;
     public struct PlayerControlsActions
@@ -425,8 +517,6 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_PlayerControls_Movement;
         public InputAction @Jump => m_Wrapper.m_PlayerControls_Jump;
         public InputAction @Sprint => m_Wrapper.m_PlayerControls_Sprint;
-        public InputAction @LeftMouse => m_Wrapper.m_PlayerControls_LeftMouse;
-        public InputAction @RightMouse => m_Wrapper.m_PlayerControls_RightMouse;
         public InputAction @Interact => m_Wrapper.m_PlayerControls_Interact;
         public InputAction @LeftMouseHold => m_Wrapper.m_PlayerControls_LeftMouseHold;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
@@ -447,12 +537,6 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Sprint.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnSprint;
                 @Sprint.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnSprint;
                 @Sprint.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnSprint;
-                @LeftMouse.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnLeftMouse;
-                @LeftMouse.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnLeftMouse;
-                @LeftMouse.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnLeftMouse;
-                @RightMouse.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRightMouse;
-                @RightMouse.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRightMouse;
-                @RightMouse.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRightMouse;
                 @Interact.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnInteract;
@@ -472,12 +556,6 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
-                @LeftMouse.started += instance.OnLeftMouse;
-                @LeftMouse.performed += instance.OnLeftMouse;
-                @LeftMouse.canceled += instance.OnLeftMouse;
-                @RightMouse.started += instance.OnRightMouse;
-                @RightMouse.performed += instance.OnRightMouse;
-                @RightMouse.canceled += instance.OnRightMouse;
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
@@ -578,13 +656,84 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         }
     }
     public MenuControlsActions @MenuControls => new MenuControlsActions(this);
+
+    // Combat
+    private readonly InputActionMap m_Combat;
+    private ICombatActions m_CombatActionsCallbackInterface;
+    private readonly InputAction m_Combat_FirstSkill;
+    private readonly InputAction m_Combat_SecondSkill;
+    private readonly InputAction m_Combat_ThirdSkill;
+    private readonly InputAction m_Combat_UltimateSkill;
+    private readonly InputAction m_Combat_RightMouse;
+    private readonly InputAction m_Combat_LeftMouse;
+    public struct CombatActions
+    {
+        private @GameControls m_Wrapper;
+        public CombatActions(@GameControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @FirstSkill => m_Wrapper.m_Combat_FirstSkill;
+        public InputAction @SecondSkill => m_Wrapper.m_Combat_SecondSkill;
+        public InputAction @ThirdSkill => m_Wrapper.m_Combat_ThirdSkill;
+        public InputAction @UltimateSkill => m_Wrapper.m_Combat_UltimateSkill;
+        public InputAction @RightMouse => m_Wrapper.m_Combat_RightMouse;
+        public InputAction @LeftMouse => m_Wrapper.m_Combat_LeftMouse;
+        public InputActionMap Get() { return m_Wrapper.m_Combat; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CombatActions set) { return set.Get(); }
+        public void SetCallbacks(ICombatActions instance)
+        {
+            if (m_Wrapper.m_CombatActionsCallbackInterface != null)
+            {
+                @FirstSkill.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnFirstSkill;
+                @FirstSkill.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnFirstSkill;
+                @FirstSkill.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnFirstSkill;
+                @SecondSkill.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnSecondSkill;
+                @SecondSkill.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnSecondSkill;
+                @SecondSkill.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnSecondSkill;
+                @ThirdSkill.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnThirdSkill;
+                @ThirdSkill.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnThirdSkill;
+                @ThirdSkill.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnThirdSkill;
+                @UltimateSkill.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnUltimateSkill;
+                @UltimateSkill.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnUltimateSkill;
+                @UltimateSkill.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnUltimateSkill;
+                @RightMouse.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnRightMouse;
+                @RightMouse.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnRightMouse;
+                @RightMouse.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnRightMouse;
+                @LeftMouse.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnLeftMouse;
+                @LeftMouse.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnLeftMouse;
+                @LeftMouse.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnLeftMouse;
+            }
+            m_Wrapper.m_CombatActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @FirstSkill.started += instance.OnFirstSkill;
+                @FirstSkill.performed += instance.OnFirstSkill;
+                @FirstSkill.canceled += instance.OnFirstSkill;
+                @SecondSkill.started += instance.OnSecondSkill;
+                @SecondSkill.performed += instance.OnSecondSkill;
+                @SecondSkill.canceled += instance.OnSecondSkill;
+                @ThirdSkill.started += instance.OnThirdSkill;
+                @ThirdSkill.performed += instance.OnThirdSkill;
+                @ThirdSkill.canceled += instance.OnThirdSkill;
+                @UltimateSkill.started += instance.OnUltimateSkill;
+                @UltimateSkill.performed += instance.OnUltimateSkill;
+                @UltimateSkill.canceled += instance.OnUltimateSkill;
+                @RightMouse.started += instance.OnRightMouse;
+                @RightMouse.performed += instance.OnRightMouse;
+                @RightMouse.canceled += instance.OnRightMouse;
+                @LeftMouse.started += instance.OnLeftMouse;
+                @LeftMouse.performed += instance.OnLeftMouse;
+                @LeftMouse.canceled += instance.OnLeftMouse;
+            }
+        }
+    }
+    public CombatActions @Combat => new CombatActions(this);
     public interface IPlayerControlsActions
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
-        void OnLeftMouse(InputAction.CallbackContext context);
-        void OnRightMouse(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnLeftMouseHold(InputAction.CallbackContext context);
     }
@@ -598,5 +747,14 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         void OnEscape(InputAction.CallbackContext context);
         void OnOpenInventory(InputAction.CallbackContext context);
         void OnOpenSkillTree(InputAction.CallbackContext context);
+    }
+    public interface ICombatActions
+    {
+        void OnFirstSkill(InputAction.CallbackContext context);
+        void OnSecondSkill(InputAction.CallbackContext context);
+        void OnThirdSkill(InputAction.CallbackContext context);
+        void OnUltimateSkill(InputAction.CallbackContext context);
+        void OnRightMouse(InputAction.CallbackContext context);
+        void OnLeftMouse(InputAction.CallbackContext context);
     }
 }
