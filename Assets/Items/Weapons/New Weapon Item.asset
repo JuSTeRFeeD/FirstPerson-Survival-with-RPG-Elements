@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemIcon: {fileID: 0}
   itemName: 
-  isStackable: 1
+  isStackable: 0
+  stackSize: 100
   isUnique: 0
   prefab: {fileID: 0}
   equipmentType: 0

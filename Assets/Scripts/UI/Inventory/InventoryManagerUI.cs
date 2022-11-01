@@ -36,7 +36,7 @@ namespace UI.Inventory
             ShowItemTooltip(null);
         }
 
-        public void ShowItemTooltip(ItemStuck stuck)
+        public void ShowItemTooltip(ItemStack stuck)
         {
             if (stuck is null || stuck.IsEmpty)
             {
@@ -72,7 +72,7 @@ namespace UI.Inventory
             draggingSlot.ResetSlotDrag();
         }
 
-        public void UseItem(ItemStuck stuck, int slotIndex, InventoryContainer fromContainer)
+        public void UseItem(ItemStack stuck, int slotIndex, InventoryContainer fromContainer)
         {
             if (stuck.item.GetType() == typeof(EquipmentItem))
             {

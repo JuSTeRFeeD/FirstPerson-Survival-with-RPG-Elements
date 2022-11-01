@@ -43,10 +43,10 @@ namespace UI.Inventory
         {
             itemBackgroundImage = GetComponent<Image>();
             _initBgColor = itemBackgroundImage.color;
-            _dragParent = transform.parent.parent.parent ? transform.parent.parent.parent : transform.parent;
+            _dragParent = transform.parent.parent.parent.parent;
         }
 
-        public void SetData(ItemStuck stuck)
+        public void SetData(ItemStack stuck)
         {
             if (stuck != null) 
             {
@@ -84,6 +84,7 @@ namespace UI.Inventory
             InventoryUI = inventoryUI;
             _inventoryManager = inventoryManager;
             SlotIndex = slotIndex;
+            ClearData();
         }
 
         private void UpdateInfo(Sprite icon, int amount)

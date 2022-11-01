@@ -15,6 +15,7 @@ MonoBehaviour:
   itemIcon: {fileID: -1360998198, guid: 79087a23b15b6684dbaa5125189aee64, type: 3}
   itemName: "\u0414\u0443\u0431\u0438\u043D\u0430 \u0431\u043B\u044F\u0442\u044C"
   isStackable: 0
+  stackSize: 100
   isUnique: 0
   prefab: {fileID: 919132149155446097, guid: 82de5f4d2dff6424ba8f609062c5a945, type: 3}
   equipmentType: 4

@@ -10,9 +10,9 @@ namespace Inventory
         public InventorySlotUI slot;
         public EquipmentItem EquipmentItem { get; private set; }
 
-        public ItemStuck Stuck => new() { item = EquipmentItem, amount = 1 };
+        public ItemStack Stuck => new() { item = EquipmentItem, amount = 1 };
         
-        public ItemStuck Equip(EquipmentItem item)
+        public ItemStack Equip(EquipmentItem item)
         {
             var equipped = Stuck;
             EquipmentItem = item;

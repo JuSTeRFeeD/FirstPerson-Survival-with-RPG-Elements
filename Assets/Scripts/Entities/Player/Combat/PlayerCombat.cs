@@ -35,6 +35,8 @@ namespace Entities.Player.Combat
 
         private void HandleBaseAttack(CallbackContext ctx)
         {
+            if (GameManager.Instance.PlayerGameState != PlayerGameState.Playing) return;
+            
             // var left = playerEquipment.GetItemInSlot(EquipmentSlotType.LeftHand);
             // var right = playerEquipment.GetItemInSlot(EquipmentSlotType.RightHand);
             // TODO: check what item is used

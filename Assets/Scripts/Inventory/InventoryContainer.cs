@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Items;
 using Managers;
 using UI.Inventory;
 using UnityEngine;
-using Utils;
 
 namespace Inventory
 {
     public class InventoryContainer : MonoBehaviour, IInventoryContainer
     {
-        public List<ItemStuck> test = new List<ItemStuck>();
+        public List<ItemStack> test = new List<ItemStack>();
         
         [Header("Properties")]
         
@@ -21,32 +19,34 @@ namespace Inventory
         [SerializeField] private bool isMineOpeningInventory;
 
         [SerializeField] private int itemsCount = 18;
-        public ItemStuck[] items;
-        private const uint StackSize = 100;
-    
-        public delegate void OnItemChange(ItemStuck item, int slotIndex);
+        public ItemStack[] items;
+
+        public delegate void OnItemChange(ItemStack item, int slotIndex);
         public OnItemChange ItemChangeEvent;
+
+        private int _stuckSize;
+        
+        private void Awake()
+        {
+            items = new ItemStack[itemsCount == 0 ? 17 : itemsCount];
+            for (var i = 0; i < items.Length; i++)
+            {
+                items[i] = new ItemStack();
+            }
+        }
 
         private void Start()
         {
-#if UNITY_EDITOR
-            NullRefCheck.CheckNullable(inventoryUI);
-#endif
+            // todo: del! for tests
+            foreach (var t in test) AddItem(t);
             
-            items = new ItemStuck[itemsCount == 0 ? 17 : itemsCount];
-            for (var i = 0; i < items.Length; i++)
-            {
-                items[i] = new ItemStuck();
-            }
-
             if (!isMineOpeningInventory) return;
             GameManager.Instance.PlayerGameStateChangedEvent += HandlePlayerInvOpen;
-                
-            // todo: del! for tests
-            foreach (var t in test)
-            {
-                AddItem(t);
-            }
+        }
+
+        public void SetInventoryUI(InventoryUI invUI)
+        {
+            inventoryUI = invUI;
         }
         
         private void HandlePlayerInvOpen(PlayerGameState state, PlayerGameState prevState)
@@ -54,13 +54,10 @@ namespace Inventory
             if (state == PlayerGameState.Inventory)
             {
                 inventoryUI.OpenInventory(this);    
-            } else if (prevState == PlayerGameState.Inventory)
-            {
-                inventoryUI.CloseInventory();
-            }
+            } 
         }
 
-        public ItemStuck GetItemByIndex(int slotIndex)
+        public ItemStack GetItemBySlotIndex(int slotIndex)
         {
             if (slotIndex < 0 || slotIndex > items.Length)
             {
@@ -70,30 +67,47 @@ namespace Inventory
         }
 
         /// <returns>ItemStuck returns if not enough space in inventory container for this items</returns>
-        public ItemStuck AddItem(ItemStuck stuck)
+        public ItemStack AddItem(ItemStack stuck)
         {
-            if (items.Length >= StackSize) return stuck;
-
             if (stuck.item.IsStackable)
             {
+                // Adding amount to equal item
+                var itemStackSize = stuck.item.stackSize;
                 for (var i = 0; i < items.Length; i++)
                 {
                     if (items[i].IsEmpty || 
                         items[i].item.ItemName != stuck.item.ItemName || 
-                        items[i].amount >= StackSize
+                        items[i].amount >= itemStackSize
                         ) continue;
                     
-                    items[i].amount += stuck.amount; // TODO: handle to add multi items by stuck
+                    items[i].amount += stuck.amount;
+                    if (items[i].amount > itemStackSize)
+                    {
+                        items[i].amount = itemStackSize;
+                        ItemChangeEvent?.Invoke(items[i], i);
+                        return new ItemStack
+                        {
+                            item = stuck.item,
+                            amount = items[i].amount - itemStackSize,
+                        };
+                    }
                     ItemChangeEvent?.Invoke(items[i], i);
                     return null;
                 }
             }
 
+            Debug.Log("Adding to empty slot");
+            // Put to empty slot
             for (var i = 0; i < items.Length; i++)
             {
-                if (!items[i].IsEmpty) continue;
+                if (!items[i].IsEmpty)
+                {
+                    Debug.Log($"WTF {items[i].item.ItemName}");
+                    continue;
+                }
+                Debug.Log("ADDED");
                 items[i].item = stuck.item;
-                items[i].amount = stuck.amount; // TODO: handle to add multi items by stuck
+                items[i].amount = stuck.amount;
                 ItemChangeEvent?.Invoke(items[i], i);
                 return null; 
             }
@@ -101,13 +115,13 @@ namespace Inventory
             return stuck;
         }
         
-        public ItemStuck RemoveItem(int slotIndex)
+        public ItemStack RemoveItem(int slotIndex)
         {
             if (slotIndex < 0 || slotIndex > items.Length)
             {
                 throw new Exception("Out of bounds inv size");
             }
-            var stuck = new ItemStuck
+            var stuck = new ItemStack
             {
                 item = items[slotIndex].item,
                 amount = items[slotIndex].amount
@@ -119,35 +133,95 @@ namespace Inventory
 
         public void SwapItems(int indexFirst, int indexSecond)
         {
-            (items[indexFirst], items[indexSecond]) = (items[indexSecond], items[indexFirst]);
+            if (!items[indexSecond].IsEmpty &&
+                items[indexFirst].item.IsStackable &&
+                items[indexFirst].item.ItemName == items[indexSecond].item.ItemName)
+            {
+                items[indexSecond].amount += items[indexFirst].amount;
+                if (items[indexSecond].amount > items[indexFirst].item.stackSize)
+                {
+                    items[indexFirst].amount = items[indexSecond].amount - items[indexFirst].item.stackSize;
+                }
+                else
+                {
+                    items[indexFirst].Clear();
+                }
+            }
+            else
+            {
+                (items[indexFirst], items[indexSecond]) = (items[indexSecond], items[indexFirst]);
+            }
             ItemChangeEvent?.Invoke(items[indexFirst], indexFirst);
             ItemChangeEvent?.Invoke(items[indexSecond], indexSecond);
         }
-        
-        // public void MoveItemToContainer(InventoryContainer container, int slotIndex)
-        // {
-            // if (container.AddItem(items[slotIndex]) is null)
-            // {
-                // RemoveItem(slotIndex);
-            // }
-        // }
 
-        // /// <summary>
-        // /// Swap item between two inventory containers
-        // /// </summary>
-        // /// <param name="container">Other container</param>
-        // /// <param name="slotIndex">Current container item slot index</param>
-        // /// <param name="dropSlotIndex">Other container item slot index</param>
-        // public void SwapItemWithContainer(InventoryContainer container, int slotIndex, int dropSlotIndex)
-        // {
-        //     (container.items[dropSlotIndex], items[slotIndex]) = (items[slotIndex], container.items[dropSlotIndex]);
-        //     ItemChangeEvent?.Invoke(items[slotIndex], slotIndex);
-        //     container.ItemChangeEvent?.Invoke(container.items[dropSlotIndex], dropSlotIndex);
-        // }
+        public void MoveItemToContainerSlot(int fromSlotIndex, int toSlotIndex, IInventoryContainer toContainer)
+        {
+            var movingItem = GetItemBySlotIndex(fromSlotIndex);
+            var otherItem = toContainer.GetItemBySlotIndex(toSlotIndex);
+            
+            // Moving to empty slot in other container
+            if (otherItem.IsEmpty)
+            {
+                toContainer.AddItemToSlotIndex(movingItem, toSlotIndex);
+                RemoveItem(fromSlotIndex);
+                return;
+            }
 
-        // public void DropItemToWorld(BaseItem item)
-        // {
-        
-        // }
+            // Swap not equal items in two containers
+            if (movingItem.item.ItemName != otherItem.item.ItemName)
+            {
+                // var removedItem = toContainer.RemoveItem(toSlotIndex);
+                var itemFrom = RemoveItem(fromSlotIndex);
+                var itemTo = toContainer.RemoveItem(toSlotIndex);
+                toContainer.AddItemToSlotIndex(itemFrom, toSlotIndex);
+                AddItemToSlotIndex(itemTo, fromSlotIndex);
+                return;
+            }
+            
+            var restOfStuck = toContainer.AddItemToSlotIndex(movingItem, toSlotIndex);
+            if (restOfStuck == null) RemoveItem(fromSlotIndex);
+            else
+            {
+                items[fromSlotIndex].amount = restOfStuck.amount;
+            }
+        }
+
+        public ItemStack AddItemToSlotIndex(ItemStack stuck, int slotIndex)
+        {
+            if (stuck == null || stuck.IsEmpty) return null;
+            
+            // TODO: Stuck items if slot not empty!
+            if (items[slotIndex].IsEmpty)
+            {
+                items[slotIndex].item = stuck.item;
+                items[slotIndex].amount = stuck.amount;
+                ItemChangeEvent?.Invoke(items[slotIndex], slotIndex);
+                return null;
+            }
+
+            items[slotIndex].amount += stuck.amount;
+            var itemStackSize = stuck.item.stackSize;
+            if (items[slotIndex].amount > itemStackSize)
+            {
+                items[slotIndex].amount = itemStackSize;
+                return new ItemStack
+                {
+                    item = stuck.item,
+                    amount = items[slotIndex].amount - itemStackSize,
+                };
+            }
+            ItemChangeEvent?.Invoke(items[slotIndex], slotIndex);
+            return null;
+        }
+
+        public void ClearAllItems()
+        {
+            for (var i = 0; i < items.Length; i++)
+            {
+                items[i].Clear();
+                ItemChangeEvent?.Invoke(null, i);
+            }
+        }
     }
 }

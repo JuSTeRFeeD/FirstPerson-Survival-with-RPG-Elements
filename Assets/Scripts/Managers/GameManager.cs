@@ -11,6 +11,8 @@ namespace Managers
 
         public PlayerData PlayerData { get; private set; }
 
+        public static DropManager DropManager;
+
         // TODO [!!!]: for tests 
         public int testAddingExp = 3;
         

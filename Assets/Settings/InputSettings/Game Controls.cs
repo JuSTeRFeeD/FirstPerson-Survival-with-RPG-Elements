@@ -253,6 +253,15 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenBuilding"",
+                    ""type"": ""Button"",
+                    ""id"": ""632deb80-b18e-41b1-9401-1f7d052e9d87"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -281,11 +290,22 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b104ba75-8d99-446f-9a41-f2de2772526f"",
-                    ""path"": ""<Keyboard>/b"",
+                    ""path"": ""<Keyboard>/n"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""OpenSkillTree"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4c360f31-2055-4845-aeaa-3d86e2bfccae"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenBuilding"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -438,6 +458,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_MenuControls_Escape = m_MenuControls.FindAction("Escape", throwIfNotFound: true);
         m_MenuControls_OpenInventory = m_MenuControls.FindAction("OpenInventory", throwIfNotFound: true);
         m_MenuControls_OpenSkillTree = m_MenuControls.FindAction("OpenSkillTree", throwIfNotFound: true);
+        m_MenuControls_OpenBuilding = m_MenuControls.FindAction("OpenBuilding", throwIfNotFound: true);
         // Combat
         m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
         m_Combat_FirstSkill = m_Combat.FindAction("FirstSkill", throwIfNotFound: true);
@@ -614,6 +635,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_MenuControls_Escape;
     private readonly InputAction m_MenuControls_OpenInventory;
     private readonly InputAction m_MenuControls_OpenSkillTree;
+    private readonly InputAction m_MenuControls_OpenBuilding;
     public struct MenuControlsActions
     {
         private @GameControls m_Wrapper;
@@ -621,6 +643,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         public InputAction @Escape => m_Wrapper.m_MenuControls_Escape;
         public InputAction @OpenInventory => m_Wrapper.m_MenuControls_OpenInventory;
         public InputAction @OpenSkillTree => m_Wrapper.m_MenuControls_OpenSkillTree;
+        public InputAction @OpenBuilding => m_Wrapper.m_MenuControls_OpenBuilding;
         public InputActionMap Get() { return m_Wrapper.m_MenuControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -639,6 +662,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @OpenSkillTree.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenSkillTree;
                 @OpenSkillTree.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenSkillTree;
                 @OpenSkillTree.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenSkillTree;
+                @OpenBuilding.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenBuilding;
+                @OpenBuilding.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenBuilding;
+                @OpenBuilding.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenBuilding;
             }
             m_Wrapper.m_MenuControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -652,6 +678,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @OpenSkillTree.started += instance.OnOpenSkillTree;
                 @OpenSkillTree.performed += instance.OnOpenSkillTree;
                 @OpenSkillTree.canceled += instance.OnOpenSkillTree;
+                @OpenBuilding.started += instance.OnOpenBuilding;
+                @OpenBuilding.performed += instance.OnOpenBuilding;
+                @OpenBuilding.canceled += instance.OnOpenBuilding;
             }
         }
     }
@@ -747,6 +776,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         void OnEscape(InputAction.CallbackContext context);
         void OnOpenInventory(InputAction.CallbackContext context);
         void OnOpenSkillTree(InputAction.CallbackContext context);
+        void OnOpenBuilding(InputAction.CallbackContext context);
     }
     public interface ICombatActions
     {

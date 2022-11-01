@@ -145,7 +145,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7750792057473039562}
   - component: {fileID: 7750792057473039564}
-  - component: {fileID: 7750792057473039567}
   - component: {fileID: 7750792057473039565}
   m_Layer: 5
   m_Name: Skill Bar
@@ -184,22 +183,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7750792057473039563}
   m_CullTransparentMesh: 1
---- !u!114 &7750792057473039567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7750792057473039563}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fa4c1ffea7cb5b4f95fd1232023b9b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slotContainer: {fileID: 8469896138699445876}
-  itemBackgroundImage: {fileID: 7750792057473039565}
-  itemImage: {fileID: 1204560208941048281}
-  amountText: {fileID: 2673529995184491896}
 --- !u!114 &7750792057473039565
 MonoBehaviour:
   m_ObjectHideFlags: 0

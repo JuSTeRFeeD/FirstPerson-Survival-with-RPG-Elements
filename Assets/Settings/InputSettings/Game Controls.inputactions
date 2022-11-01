@@ -231,6 +231,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "OpenBuilding",
+                    "type": "Button",
+                    "id": "632deb80-b18e-41b1-9401-1f7d052e9d87",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -259,11 +268,22 @@
                 {
                     "name": "",
                     "id": "b104ba75-8d99-446f-9a41-f2de2772526f",
-                    "path": "<Keyboard>/b",
+                    "path": "<Keyboard>/n",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "OpenSkillTree",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4c360f31-2055-4845-aeaa-3d86e2bfccae",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenBuilding",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

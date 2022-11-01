@@ -15,6 +15,7 @@ MonoBehaviour:
   itemIcon: {fileID: 21300000, guid: 0430367301821d14d914201cdbb27c54, type: 3}
   itemName: Knife
   isStackable: 0
+  stackSize: 100
   isUnique: 0
   prefab: {fileID: 919132149155446097, guid: 82de5f4d2dff6424ba8f609062c5a945, type: 3}
   equipmentType: 5

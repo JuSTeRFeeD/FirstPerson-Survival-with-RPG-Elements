@@ -7,9 +7,13 @@ namespace UI.Inventory
     public class InventoryUI : MonoBehaviour, IInventoryUI
     {
         [SerializeField] private Transform cellsContainer;
+        [SerializeField] private GameObject viewContainer;
+        [SerializeField] private bool isClosable;
         private InventorySlotUI[] _cells;
         public InventoryContainer OpenedInventory { get; private set; }
         public InventoryManagerUI inventoryManager;
+
+        public bool IsOpened => OpenedInventory != null;
 
         private void Awake()
         {
@@ -17,7 +21,7 @@ namespace UI.Inventory
             NullRefCheck.CheckNullable(cellsContainer);
 #endif
 
-            _cells = new InventorySlotUI[cellsContainer.childCount + 1];
+            _cells = new InventorySlotUI[cellsContainer.childCount];
             var i = 0;
             foreach(Transform child in cellsContainer)
             {
@@ -29,7 +33,23 @@ namespace UI.Inventory
                 slot.ItemDropToSlotEvent += HandleSlotDropItem;
                 _cells[i++] = slot;
             }
+
+            if (isClosable) SetVisible(false);
         }
+
+        private void SetVisible(bool isVisible)
+        {
+            viewContainer.SetActive(isVisible);
+        }
+
+        private void ClearSlots()
+        {
+            foreach (var slot in _cells)
+            {
+                slot.ClearData();
+            }
+        }
+        
 
         public IInventoryContainer GetInventoryContainer()
         {
@@ -70,8 +90,10 @@ namespace UI.Inventory
             }
             
             // Other Inventory Container
-            // TODO: try to add item then remove item
-            // draggingInvContainer.SwapItemWithContainer(OpenedInventory, draggingSlot.SlotIndex, slot.SlotIndex);
+            draggingInvContainer.MoveItemToContainerSlot(
+                draggingSlot.SlotIndex,
+                slot.SlotIndex, 
+                OpenedInventory);
             inventoryManager.draggingSlot = null;
         }
         
@@ -85,15 +107,29 @@ namespace UI.Inventory
             {
                 _cells[i].SetData(items[i]);
             }
+            
+            if (isClosable) SetVisible(true);
         }
 
         public void CloseInventory()
         {
             if (OpenedInventory == null) return;
             OpenedInventory.ItemChangeEvent -= HandleItemChange;
+            ClearSlots();
+
+            if (!isClosable) return;
+            // Reset draggingSlot on inventory closing 
+            if (inventoryManager != null &&
+                inventoryManager.draggingSlot != null && 
+                inventoryManager.draggingSlot.InventoryUI.Equals(this))
+            {
+                inventoryManager.draggingSlot.ResetSlotDrag();
+                inventoryManager.draggingSlot = null;
+            }
+            SetVisible(false);
         }
 
-        private void HandleItemChange(ItemStuck stuck, int slotIndex)
+        private void HandleItemChange(ItemStack stuck, int slotIndex)
         {
             _cells[slotIndex].SetData(stuck);
         }

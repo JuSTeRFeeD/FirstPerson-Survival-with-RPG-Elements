@@ -7,7 +7,9 @@ namespace Items
     {
         [SerializeField] protected Sprite itemIcon;
         [SerializeField] protected string itemName;
+        [Space]
         [SerializeField] private bool isStackable = true;
+        [SerializeField] public int stackSize = 100; 
         [Space]
         [Tooltip("Only one copy of this item should exist in a game instance!")]
         [SerializeField] private bool isUnique;

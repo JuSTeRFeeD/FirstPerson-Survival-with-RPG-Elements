@@ -4,12 +4,12 @@ using Items;
 namespace Inventory
 {
     [Serializable]
-    public class ItemStuck
+    public class ItemStack
     {
         public BaseItem item;
         public int amount;
 
-        public bool IsEmpty => item == null || amount == 0;
+        public bool IsEmpty => item == null || amount <= 0;
     
         public void Clear()
         {

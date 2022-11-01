@@ -1,4 +1,6 @@
-﻿using Entities.Player;
+﻿using Entities;
+using Entities.CombatHit;
+using Entities.Player;
 using Managers;
 using TMPro;
 using UnityEngine;
@@ -15,6 +17,9 @@ namespace UI
         [Space]
         [SerializeField] private Energy energy;
         [SerializeField] private Image energyBar;
+        [Space] 
+        [SerializeField] private PlayerHealth playerHealth; 
+        [SerializeField] private Image healthBar; 
 
         private void Start()
         {
@@ -27,6 +32,8 @@ namespace UI
             energy.EnergyChangedEvent += HandleEnergyChanged;
             _playerData.Leveling.LevelUpEvent += HandleLevelChanged;
             _playerData.Leveling.ExperienceChangedEvent += HandleExperienceChanged;
+
+            playerHealth.HealthChangeEvent += HandleHealthChange;
         }
 
         private void OnDestroy()
@@ -39,6 +46,11 @@ namespace UI
         private void HandleEnergyChanged()
         {
             energyBar.fillAmount = energy.PercentOfEnergy;
+        }
+
+        private void HandleHealthChange(HitData data)
+        {
+            healthBar.fillAmount = playerHealth.HealthPercent;
         }
 
         private void HandleLevelChanged()

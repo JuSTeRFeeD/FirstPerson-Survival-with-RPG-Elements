@@ -45,8 +45,6 @@ namespace Inventory
             if (stuck.item.GetType() != _equipType) return;
             var equipmentItem = (EquipmentItem)stuck.item;
 
-            // TODO: Будет проблема если надеть двухручку, а надето два одноручных - инвентарь плюнет в ебало
-            
             switch (equipmentItem.equipmentType)
             {
                 // TODO: надевать на слот в котором слабее предмет по его хар-кам
@@ -91,17 +89,6 @@ namespace Inventory
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        private void IncreaseStats(EquipmentSlotType type, EquipmentItem item)
-        {
-            if (item == null) return;
-            _playerStats.IncreaseStats(item.stats);
-        }
-        private void DecreaseStats(EquipmentSlotType type, EquipmentItem item)
-        {
-            if (item == null) return;
-            _playerStats.DecreaseStats(item.stats);
         }
 
         private void EquipToSlot(EquipmentSlotType type, EquipmentItem item,
@@ -187,7 +174,7 @@ namespace Inventory
         {
             if (!slot.HasItem) return;
             var equipped = initEquipSlots[slot.SlotIndex].EquipmentItem;
-            var stuck = new ItemStuck
+            var stuck = new ItemStack
             {
                 item = equipped,
                 amount = 1
@@ -211,18 +198,18 @@ namespace Inventory
 
         #endregion
 
-        public ItemStuck GetItemByIndex(int slotIndex)
+        public ItemStack GetItemBySlotIndex(int slotIndex)
         {
             return initEquipSlots[slotIndex].Stuck;
         }
 
-        public ItemStuck AddItem(ItemStuck stuck)
+        public ItemStack AddItem(ItemStack stuck)
         {
             // TODO: drop logic code
             return null;
         }
 
-        public ItemStuck RemoveItem(int slotIndex)
+        public ItemStack RemoveItem(int slotIndex)
         {
             // TODO: drop logic code
             return null;
@@ -230,7 +217,15 @@ namespace Inventory
 
         public void SwapItems(int indexFirst, int indexSecond)
         {
-            // TODO: swap weapon items
+            // TODO: swap weapon items only!
         }
+
+        public void MoveItemToContainerSlot(int fromSlotIndex, int toSlotIndex, IInventoryContainer toContainer) { }
+        public ItemStack AddItemToSlotIndex(ItemStack stuck, int slotIndex)
+        {
+            return null;
+        }
+        public void ClearAllItems() { }
+        public void AddItemToSlot(ItemStack stuck, int slotIndex) { }
     }
 }
