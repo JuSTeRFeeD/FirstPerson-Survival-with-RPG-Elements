@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Items;
 using Managers;
 using UI.Inventory;
 using UnityEngine;
@@ -11,11 +13,9 @@ namespace Inventory
         public List<ItemStack> test = new List<ItemStack>();
         
         [Header("Properties")]
-        
-        [Tooltip("Need to set only if isMineOpeningInventory")]
+        [Tooltip("Need to set from inspector if isMineOpeningInventory")]
         [SerializeField] private InventoryUI inventoryUI;
-        
-        [Tooltip("Загружается при открытии меню")]
+        [Tooltip("Open inventory from player")]
         [SerializeField] private bool isMineOpeningInventory;
 
         [SerializeField] private int itemsCount = 18;
@@ -51,7 +51,7 @@ namespace Inventory
         
         private void HandlePlayerInvOpen(PlayerGameState state, PlayerGameState prevState)
         {
-            if (state == PlayerGameState.Inventory)
+            if (state is PlayerGameState.Inventory or PlayerGameState.Crafting)
             {
                 inventoryUI.OpenInventory(this);    
             } 
@@ -64,6 +64,44 @@ namespace Inventory
                 throw new Exception("Out of bounds inv size");
             }
             return items[slotIndex];
+        }
+
+        public int GetItemAmountByItem(BaseItem item)
+        {
+            if (item == null) return 0;
+            return items.Where(itemStack => !itemStack.IsEmpty && itemStack.item.ItemName == item.ItemName)
+                .Sum(itemStack => itemStack.amount);
+        }
+
+        public bool TakeItemAmount(BaseItem item, int amount)
+        {
+            if (item == null ||
+                amount <= 0 ||
+                GetItemAmountByItem(item) < amount
+                ) return false;
+            
+            var restAmount = amount;
+            for (var i = 0; i < items.Length; i++)
+            {
+                if (items[i].IsEmpty || items[i].item.ItemName != item.ItemName) continue;
+                
+                var temp = items[i].amount;
+                items[i].amount -= restAmount;
+                
+                if (items[i].amount < 0)
+                {
+                    items[i].Clear();
+                }
+                ItemChangeEvent?.Invoke(items[i], i);
+
+                restAmount -= temp;
+                if (restAmount == 0)
+                {
+                    return true;
+                }
+            }
+            
+            return true;
         }
 
         /// <returns>ItemStuck returns if not enough space in inventory container for this items</returns>
@@ -96,16 +134,10 @@ namespace Inventory
                 }
             }
 
-            Debug.Log("Adding to empty slot");
             // Put to empty slot
             for (var i = 0; i < items.Length; i++)
             {
-                if (!items[i].IsEmpty)
-                {
-                    Debug.Log($"WTF {items[i].item.ItemName}");
-                    continue;
-                }
-                Debug.Log("ADDED");
+                if (!items[i].IsEmpty) continue;
                 items[i].item = stuck.item;
                 items[i].amount = stuck.amount;
                 ItemChangeEvent?.Invoke(items[i], i);

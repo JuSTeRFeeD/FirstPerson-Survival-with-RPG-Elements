@@ -48,7 +48,7 @@ namespace UI.Inventory
 
         public void SetData(ItemStack stuck)
         {
-            if (stuck != null) 
+            if (stuck is { amount: > 0 }) 
             {
                 UpdateInfo(
                     stuck.item != null 

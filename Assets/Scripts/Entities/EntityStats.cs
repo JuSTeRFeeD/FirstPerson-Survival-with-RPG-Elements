@@ -45,37 +45,37 @@ namespace Entities
                 
             if (physicalDamage != 0)
             {
-                sb.AppendFormat("PHYS DMG  <b><color=#DB073D>{0}</color></b>\n", physicalDamage);
+                sb.AppendFormat("Physical Damage:  <b><color=#FFFCBB>{0}</color></b>\n", physicalDamage);
             }
             if (magicDamage != 0)
             {
-                sb.AppendFormat("MAGIC DMG <b><color=#dd4cca>{0}</color></b>\n", magicDamage);
+                sb.AppendFormat("Magic Damage: <b><color=#FFFCBB>{0}</color></b>\n", magicDamage);
             }
             if (clearDamage != 0)
             {
-                sb.AppendFormat("CLEAR DMG <b><color=#fad15a>{0}</color></b>\n", clearDamage);
+                sb.AppendFormat("Clear Damage: <b><color=#FFFCBB>{0}</color></b>\n", clearDamage);
             }
                 
             if (health != 0)
             {
-                sb.AppendFormat("HP <b><color=#168039>{0}</color></b>\n", health);
+                sb.AppendFormat("Health: <b><color=#FFFCBB>{0}</color></b>\n", health);
             }
             if (healthRegeneration != 0)
             {
-                sb.AppendFormat("HP REGENERATION <b><color=#96ED89>{0}</color></b>\n", healthRegeneration);
+                sb.AppendFormat("Health Regeneration: <b><color=#FFFCBB>{0}</color></b>\n", healthRegeneration);
             }
                 
             if (physicalDefence != 0)
             {
-                sb.AppendFormat("PHYS DEF <b><color=#00A388>{0}</color></b>\n", physicalDefence);
+                sb.AppendFormat("Physical Defence: <b><color=#FFFCBB>{0}</color></b>\n", physicalDefence);
             }
             if (magicDefence != 0)
             {
-                sb.AppendFormat("MAGIC DEF <b><color=#AA3366>{0}</color></b>\n", magicDefence);
+                sb.AppendFormat("Magical Defence: <b><color=#FFFCBB>{0}</color></b>\n", magicDefence);
             }
             if (moveSpeed != 0)
             {
-                sb.AppendFormat("MOVE SPEED <b><color=#FFF>{0}</color></b>", moveSpeed);
+                sb.AppendFormat("Movement Speed: <b><color=#FFFCBB>{0}</color></b>", moveSpeed);
             }
 
             return sb.ToString();
@@ -85,14 +85,14 @@ namespace Entities
         {
             var sb = new StringBuilder();
             sb.Append("<line-height=130%>");
-            sb.AppendFormat("Physic Damage <b><color=#DB073D>{0}</color></b>\n", physicalDamage);
-            sb.AppendFormat("Magic Damage <b><color=#dd4cca>{0}</color></b>\n", magicDamage);
-            sb.AppendFormat("Clear Damage <b><color=#fad15a>{0}</color></b>\n", clearDamage);
-            sb.AppendFormat("Health <b><color=#168039>{0}</color></b>\n", health);
-            sb.AppendFormat("Regeneration <b><color=#96ED89>{0}</color></b>\n", healthRegeneration);
-            sb.AppendFormat("Physic Defence <b><color=#00A388>{0}</color></b>\n", physicalDefence);
-            sb.AppendFormat("Magic Defence <b><color=#AA3366>{0}</color></b>\n", magicDefence);
-            sb.AppendFormat("Movement <b><color=#FFF>{0}</color></b>", moveSpeed);
+            sb.AppendFormat("Physic Damage: <b><color=#FFFCBB>{0}</color></b>\n", physicalDamage);
+            sb.AppendFormat("Magic Damage: <b><color=#FFFCBB>{0}</color></b>\n", magicDamage);
+            sb.AppendFormat("Clear Damage: <b><color=#FFFCBB>{0}</color></b>\n", clearDamage);
+            sb.AppendFormat("Health: <b><color=#FFFCBB>{0}</color></b>\n", health);
+            sb.AppendFormat("Regeneration: <b><color=#FFFCBB>{0}</color></b>\n", healthRegeneration);
+            sb.AppendFormat("Physic Defence: <b><color=#FFFCBB>{0}</color></b>\n", physicalDefence);
+            sb.AppendFormat("Magic Defence: <b><color=#FFFCBB>{0}</color></b>\n", magicDefence);
+            sb.AppendFormat("Movement Speed: <b><color=#FFFCBB>{0}</color></b>", moveSpeed);
             
             return sb.ToString();
         }

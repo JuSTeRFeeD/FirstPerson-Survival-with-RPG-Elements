@@ -161,12 +161,12 @@ namespace Inventory
 
         public void HandleHoverSlot(InventorySlotUI slot)
         {
-            inventoryManager.ShowItemTooltip(initEquipSlots[slot.SlotIndex].Stuck);
+            inventoryManager.ShowItemInfo(initEquipSlots[slot.SlotIndex].Stuck);
         }
 
         public void HandleHoverEndSlot(InventorySlotUI slot)
         {
-            inventoryManager.HideItemTooltip();   
+            inventoryManager.HideItemInfo();   
         }
         
         // De Equip

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Managers
@@ -7,6 +6,7 @@ namespace Managers
     {
         [SerializeField] private GameObject menu;
         [SerializeField] private GameObject inventory;
+        [SerializeField] private GameObject craftingMenu;
         [SerializeField] private GameObject skillsTree;
         [SerializeField] private GameObject playerAim;
 
@@ -22,7 +22,8 @@ namespace Managers
         private void GameStateChanged(PlayerGameState state, PlayerGameState prevState)
         {
             menu.SetActive(state == PlayerGameState.Menu);
-            inventory.SetActive(state == PlayerGameState.Inventory);
+            inventory.SetActive(state is PlayerGameState.Inventory or PlayerGameState.Crafting);
+            craftingMenu.SetActive(state is PlayerGameState.Inventory or PlayerGameState.Crafting);
             skillsTree.SetActive(state == PlayerGameState.SkillTree);
             playerAim.SetActive(state == PlayerGameState.Playing);
         }

@@ -6,5 +6,7 @@
         Playing,
         Inventory,
         SkillTree,
+        Crafting,
+        PlacingBuilding,
     }
 }

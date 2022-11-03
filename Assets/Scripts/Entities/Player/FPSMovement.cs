@@ -79,21 +79,13 @@ namespace Entities.Player
         private void GameStateChanged(PlayerGameState state, PlayerGameState prevState)
         {
             var isPlaying = state == PlayerGameState.Playing;
-            SwitchCursorLock(isPlaying);
-            _isActiveLookRotation = isPlaying;
-            _isActiveMovement = state != PlayerGameState.Menu && state != PlayerGameState.SkillTree;
+            _isActiveLookRotation = isPlaying || state == PlayerGameState.PlacingBuilding;
+            _isActiveMovement = isPlaying || state == PlayerGameState.Inventory;
             
             if (_isActiveMovement) return;
             // Temporary fix ====================
             _inputDir = Vector2.zero;
             _velocity = Vector3.zero;
-        }
-
-        // TODO: Move to Game Manager
-        private static void SwitchCursorLock(bool isLocked)
-        {
-            Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !isLocked;
         }
 
         private void Update()
@@ -146,13 +138,11 @@ namespace Entities.Player
         
         private void HandleJump()
         {
+            if (!_characterController.isGrounded) return;
             if (!_energy.UseStaminaAmount(jumpEnergyCost)) return;
+            _velocity.y = jumpHeight * Gravity;
             // TODO: добавить логику для прыжка по задержке (перед призимлением) путем raycast
             // кратко: нажимаешь пробел, но не приземлился - прыжок произойдет автоматически чуть позже (когда упадет чар)
-            if (_characterController.isGrounded)
-            {
-                _velocity.y = jumpHeight * Gravity;
-            }
         }
 
         private void UpdatePhysics()

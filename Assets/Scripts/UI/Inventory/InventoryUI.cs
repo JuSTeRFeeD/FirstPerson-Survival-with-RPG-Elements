@@ -1,4 +1,6 @@
+using System;
 using Inventory;
+using Managers;
 using UnityEngine;
 using Utils;
 
@@ -14,6 +16,8 @@ namespace UI.Inventory
         public InventoryManagerUI inventoryManager;
 
         public bool IsOpened => OpenedInventory != null;
+
+        private GameManager _gameManager;
 
         private void Awake()
         {
@@ -35,6 +39,11 @@ namespace UI.Inventory
             }
 
             if (isClosable) SetVisible(false);
+        }
+
+        private void Start()
+        {
+            _gameManager = GameManager.Instance;
         }
 
         private void SetVisible(bool isVisible)
@@ -59,11 +68,11 @@ namespace UI.Inventory
         public void HandleHoverSlot(InventorySlotUI slot)
         {
             if (!slot.HasItem) return;
-            inventoryManager.ShowItemTooltip(OpenedInventory.items[slot.SlotIndex]);
+            inventoryManager.ShowItemInfo(OpenedInventory.items[slot.SlotIndex]);
         }        
         public void HandleHoverEndSlot(InventorySlotUI slot)
         {
-            inventoryManager.HideItemTooltip();
+            inventoryManager.HideItemInfo();
         }        
         public void HandleSlotUseItem(InventorySlotUI slot)
         {

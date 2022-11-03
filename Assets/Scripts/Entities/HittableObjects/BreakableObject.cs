@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EditorHelpers;
 using Entities.CombatHit;
 using Inventory;
 using Items;
@@ -70,18 +71,21 @@ namespace Entities.HittableObjects
     public class Drop
     {
         public BaseItem item;
+        
         [Space]
         [Header("Drop on hit")]
         public bool dropToInventoryOnHit;
         [Tooltip("The total amount of the resource that will drop")]
-        [Min(0)] public int totalAmountOnHit;
-        [FormerlySerializedAs("chance")]
+        [Min(0)]
+        // TODO: not working attribute ShowIf
+        [ShowIf(ActionOnConditionFail.DisableAttribute, ConditionOperator.And, nameof(dropToInventoryOnHit))]
+        public int totalAmountOnHit = 0;
+        
         [Space]
         [Header("Chance drop on destroy")]
+        [FormerlySerializedAs("chance")]
         [Range(0f, 100f)] public float dropChance;
         [Min(0)] public int onDropMinAmount;
         [Min(0)] public int onDropMaxAmount;
-        
-        // TODO: НУЖНО УЧИТВАТЬ РАЗМЕР СТАКА ДЛЯ КОНКРЕТНОГО ПРЕДМЕТА В MAX AMOUNT!
     }
 }

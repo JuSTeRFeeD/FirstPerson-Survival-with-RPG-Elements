@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
+using Interactable;
 using Inventory;
-using Items;
 using TMPro;
 using UI.Inventory;
 using UnityEngine;
@@ -46,7 +45,6 @@ namespace Managers
             bag.ClearAllItems();
             foreach (var item in items)
             {
-                Debug.Log($"adding {item.item.ItemName}");
                 bag.AddItem(item);
                 // TODO: Добавить перегрузку дабы add item принимал array of StackItem
             }

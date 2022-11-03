@@ -6,14 +6,19 @@ namespace Managers
 {
     public class PoolingManager : MonoBehaviour
     {
-        public GameObject prefab;
+        [Tooltip("Only for identifying")]
+        [SerializeField] private string poolName;
+        [SerializeField] private GameObject prefab;
         [Tooltip("How much prefabs spawn on start")]
-        public int initAmount;
+        [SerializeField] private int count;
+        
         private readonly List<GameObject> _items = new List<GameObject>();
+
+        public GameObject Prefab => prefab;
         
         private void Start()
         {
-            for (var i = 0; i < initAmount; i++)
+            for (var i = 0; i < count; i++)
             {
                 AddItem();
             }

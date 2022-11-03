@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f115e28a4dad234daa9f3c74db16d5a, type: 3}
+  m_Name: Item Craft Table
+  m_EditorClassIdentifier: 
+  itemIcon: {fileID: 21300000, guid: a0e1c2f3d1ccb82419a4a158412d24ed, type: 3}
+  itemName: Craft Table
+  isStackable: 0
+  stackSize: 1
+  isUnique: 0
+  buildingPrefab: {fileID: 2300950828385009003, guid: 55916104188e3b44299741cca15b2adf,
+    type: 3}

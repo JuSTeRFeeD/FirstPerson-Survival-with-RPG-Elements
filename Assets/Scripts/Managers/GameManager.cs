@@ -1,4 +1,3 @@
-using System;
 using Entities.Player;
 using UnityEngine;
 
@@ -8,11 +7,14 @@ namespace Managers
     {
         public static GameControls GameControls { get; private set; }
         public static GameManager Instance { get; private set; }
-
-        public PlayerData PlayerData { get; private set; }
-
         public static DropManager DropManager;
 
+        public PlayerData PlayerData { get; private set; }
+        public PlayerGameState PlayerGameState { get; private set; }  = PlayerGameState.Playing;
+
+        public delegate void OnPlayerGameStateChanged(PlayerGameState state, PlayerGameState pervState);
+        public OnPlayerGameStateChanged PlayerGameStateChangedEvent;
+        
         // TODO [!!!]: for tests 
         public int testAddingExp = 3;
         
@@ -33,15 +35,24 @@ namespace Managers
 
         private void Start()
         {
-            // OpenInventory
+            SetCursorLock(true);
+            
+            // Open Inventory
             GameControls.MenuControls.OpenInventory.performed += _ =>
             {
-                if (PlayerGameState == PlayerGameState.Menu) return;
+                switch (PlayerGameState)
+                {
+                    case PlayerGameState.Menu:
+                        return;
+                    case PlayerGameState.Crafting:
+                        SetGameState(PlayerGameState.Playing);
+                        return;
+                }
                 SetGameState(PlayerGameState != PlayerGameState.Inventory
                     ? PlayerGameState.Inventory
                     : PlayerGameState.Playing);
             };
-            // OpenSkillTree
+            // Open Skill Tree
             GameControls.MenuControls.OpenSkillTree.performed += _ =>
             {
                 if (PlayerGameState == PlayerGameState.Menu) return;
@@ -56,7 +67,8 @@ namespace Managers
                     ? PlayerGameState.Menu 
                     : PlayerGameState.Playing);
             };
-            
+
+
             // TODO [!!!]: for tests 
             GameControls.PlayerControls.Interact.performed += _ =>
             {
@@ -64,15 +76,18 @@ namespace Managers
             };
         }
 
-        public PlayerGameState PlayerGameState { get; private set; }  = PlayerGameState.Playing;
-
-        public delegate void OnPlayerGameStateChanged(PlayerGameState state, PlayerGameState pervState);
-        public OnPlayerGameStateChanged PlayerGameStateChangedEvent;
-
         public void SetGameState(PlayerGameState state)
         {
+            if (state == PlayerGameState) return;
             PlayerGameStateChangedEvent?.Invoke(state, PlayerGameState);
             PlayerGameState = state;
+            SetCursorLock(state == PlayerGameState.Playing);
+        }
+        
+        private static void SetCursorLock(bool isLocked)
+        {
+            Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !isLocked;
         }
     }
 }

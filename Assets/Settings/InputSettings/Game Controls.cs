@@ -255,7 +255,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""OpenBuilding"",
+                    ""name"": ""OpenCrafting"",
                     ""type"": ""Button"",
                     ""id"": ""632deb80-b18e-41b1-9401-1f7d052e9d87"",
                     ""expectedControlType"": ""Button"",
@@ -305,7 +305,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""OpenBuilding"",
+                    ""action"": ""OpenCrafting"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -458,7 +458,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_MenuControls_Escape = m_MenuControls.FindAction("Escape", throwIfNotFound: true);
         m_MenuControls_OpenInventory = m_MenuControls.FindAction("OpenInventory", throwIfNotFound: true);
         m_MenuControls_OpenSkillTree = m_MenuControls.FindAction("OpenSkillTree", throwIfNotFound: true);
-        m_MenuControls_OpenBuilding = m_MenuControls.FindAction("OpenBuilding", throwIfNotFound: true);
+        m_MenuControls_OpenCrafting = m_MenuControls.FindAction("OpenCrafting", throwIfNotFound: true);
         // Combat
         m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
         m_Combat_FirstSkill = m_Combat.FindAction("FirstSkill", throwIfNotFound: true);
@@ -635,7 +635,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_MenuControls_Escape;
     private readonly InputAction m_MenuControls_OpenInventory;
     private readonly InputAction m_MenuControls_OpenSkillTree;
-    private readonly InputAction m_MenuControls_OpenBuilding;
+    private readonly InputAction m_MenuControls_OpenCrafting;
     public struct MenuControlsActions
     {
         private @GameControls m_Wrapper;
@@ -643,7 +643,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         public InputAction @Escape => m_Wrapper.m_MenuControls_Escape;
         public InputAction @OpenInventory => m_Wrapper.m_MenuControls_OpenInventory;
         public InputAction @OpenSkillTree => m_Wrapper.m_MenuControls_OpenSkillTree;
-        public InputAction @OpenBuilding => m_Wrapper.m_MenuControls_OpenBuilding;
+        public InputAction @OpenCrafting => m_Wrapper.m_MenuControls_OpenCrafting;
         public InputActionMap Get() { return m_Wrapper.m_MenuControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -662,9 +662,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @OpenSkillTree.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenSkillTree;
                 @OpenSkillTree.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenSkillTree;
                 @OpenSkillTree.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenSkillTree;
-                @OpenBuilding.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenBuilding;
-                @OpenBuilding.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenBuilding;
-                @OpenBuilding.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenBuilding;
+                @OpenCrafting.started -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenCrafting;
+                @OpenCrafting.performed -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenCrafting;
+                @OpenCrafting.canceled -= m_Wrapper.m_MenuControlsActionsCallbackInterface.OnOpenCrafting;
             }
             m_Wrapper.m_MenuControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -678,9 +678,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @OpenSkillTree.started += instance.OnOpenSkillTree;
                 @OpenSkillTree.performed += instance.OnOpenSkillTree;
                 @OpenSkillTree.canceled += instance.OnOpenSkillTree;
-                @OpenBuilding.started += instance.OnOpenBuilding;
-                @OpenBuilding.performed += instance.OnOpenBuilding;
-                @OpenBuilding.canceled += instance.OnOpenBuilding;
+                @OpenCrafting.started += instance.OnOpenCrafting;
+                @OpenCrafting.performed += instance.OnOpenCrafting;
+                @OpenCrafting.canceled += instance.OnOpenCrafting;
             }
         }
     }
@@ -776,7 +776,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         void OnEscape(InputAction.CallbackContext context);
         void OnOpenInventory(InputAction.CallbackContext context);
         void OnOpenSkillTree(InputAction.CallbackContext context);
-        void OnOpenBuilding(InputAction.CallbackContext context);
+        void OnOpenCrafting(InputAction.CallbackContext context);
     }
     public interface ICombatActions
     {
